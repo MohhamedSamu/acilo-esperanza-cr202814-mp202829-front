@@ -2,8 +2,8 @@
 Este es un proyecto de control administrativo para el acilo esperanza de Santa Ana para llevar el control de pacientes, doctores y citas.
 
 ### Enlaces de interes
-[ Cuadro de tareas Kanban en trello (https://trello.com/invite/b/Oa8mNhr1/ATTI0fd116449fd342c6d1b2f6e5794bb0e3E4713A71/acilo-santa-ana-dps941-mp202829-cr202814)] 
-[ Diseño propuesto de la aplicacion (https://github.com/MohhamedSamu/acilo-esperanza-cr202814-mp202829-front/blob/main/dise%C3%B1o_UX_UI_acilo_ezperanza.pdf) ]
+- [ Cuadro de tareas Kanban en trello (https://trello.com/invite/b/Oa8mNhr1/ATTI0fd116449fd342c6d1b2f6e5794bb0e3E4713A71/acilo-santa-ana-dps941-mp202829-cr202814)]
+- [ Diseño propuesto de la aplicacion (https://github.com/MohhamedSamu/acilo-esperanza-cr202814-mp202829-front/blob/main/dise%C3%B1o_UX_UI_acilo_ezperanza.pdf) ]
 
 ### Programadores
 * Samuel Fernando Calderon Reyes, CR202814
