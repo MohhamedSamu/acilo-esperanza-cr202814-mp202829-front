@@ -1,20 +1,27 @@
-import { Button, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { Navigation } from "react-native-navigation";
+
+import { Text, Button, Card } from 'react-native-paper';
+
+
 import React from "react";
 
 const HomeScreen = (props: any) => {
   return (
     <View style={styles.root}>
-      <Text>Hello React Native Navigation 👋</Text>
 
-      <Button
-        title='Push Settings Screen'
-        color='#710ce3'
-        onPress={() => Navigation.push(props.componentId, {
+      <Text variant="displayLarge">Display Large</Text>
+      <Text> </Text>
+      <Text>Hello React Native Navigation 👋 </Text>
+
+      <Text> </Text>
+      <Button icon="camera" mode="contained" onPress={() => Navigation.push(props.componentId, {
           component: {
             name: 'Settings'
           }
-        })} />
+        })}>
+      Push Settings Screen
+      </Button>
     </View>
   );
 };
