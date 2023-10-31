@@ -1,10 +1,14 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 
-const SettingsScreen = () => {
+const SettingsScreen = (props: any) => {
   return (
     <View style={styles.root}>
-      <Text>Settings Screen desde otra pantalla</Text>
+      <Text>Settings Screen desde otra pantalla xd</Text>
+      {props !== null && (
+          <Text >El número mínimo es: {props.count}</Text>
+      )}
+      <Text ></Text>
     </View>
   );
 }

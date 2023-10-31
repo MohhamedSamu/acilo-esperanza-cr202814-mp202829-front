@@ -5,13 +5,15 @@ import Logo from '../src/components/Logo';
 import Header from '../src/components/Header';
 import Button from '../src/components/Button';
 import TextInput from '../src/components/TextInput';
-import BackButton from '../src/components/BackButton';
+import { mainRoot, User } from '../src/core/roots';
+
 import { theme } from '../src/core/theme';
 import { emailValidator, passwordValidator } from '../src/core/utils';
-import { Navigation } from '../src/types';
+import { NavigationP } from '../src/types';
+import { Navigation } from "react-native-navigation";
 
 type Props = {
-  navigation: Navigation;
+  navigation: NavigationP;
 };
 
 const LoginScreen = ({ navigation }: Props) => {
@@ -28,7 +30,13 @@ const LoginScreen = ({ navigation }: Props) => {
       return;
     }
 
-    navigation.navigate('Dashboard');
+    const user: User = {
+      name: 'Walter',
+      email: email.value
+    }
+
+    Navigation.setRoot(mainRoot(user) );
+
   };
 
   return (
@@ -103,36 +111,5 @@ const styles = StyleSheet.create({
   },
 });
 
-
-const mainRoot = {
-  root: {
-    bottomTabs: {
-      children: [
-        {
-          stack: {
-            children: [
-              {
-                component: {
-                  name: 'Home'
-                }
-              },
-            ]
-          }
-        },
-        {
-          stack: {
-            children: [
-              {
-                component: {
-                  name: 'Settings'
-                }
-              }
-            ]
-          }
-        }
-      ]
-    }
-  }
-};
 
 export default LoginScreen;

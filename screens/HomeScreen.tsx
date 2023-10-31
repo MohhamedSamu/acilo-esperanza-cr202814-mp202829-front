@@ -1,6 +1,6 @@
 import { StyleSheet, View } from "react-native";
 import { Navigation } from "react-native-navigation";
-
+import { loginRoot } from "../src/core/roots";
 import { Text, Button, Card } from 'react-native-paper';
 
 
@@ -14,14 +14,24 @@ const HomeScreen = (props: any) => {
       <Text> </Text>
       <Text>Hello React Native Navigation 👋 </Text>
 
-      <Text> </Text>
+      {props.user !== null && props.user !== undefined && (
+        <Text >El correo es: {props.user.email}</Text>
+      )}
       <Button icon="camera" mode="contained" onPress={() => Navigation.push(props.componentId, {
           component: {
-            name: 'Settings'
+            name: 'Settings',
+            passProps: {
+              count: 5
+            }
           }
         })}>
       Push Settings Screen
       </Button>
+
+      <Button icon="camera" mode="contained" onPress={() => Navigation.setRoot(loginRoot())}>
+        Logout
+      </Button>
+
     </View>
   );
 };
@@ -48,4 +58,3 @@ const styles = StyleSheet.create({
 });
 
 export default HomeScreen;
-

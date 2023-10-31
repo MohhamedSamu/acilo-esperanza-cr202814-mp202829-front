@@ -4,15 +4,18 @@ import { Navigation } from 'react-native-navigation';
 import SettingsScreen from "./screens/SettingsScreen";
 import HomeScreen from "./screens/HomeScreen";
 import LoginScreen from "./screens/LoginScreen";
+import SplashScreen from "./screens/SplashScreen";
 
+Navigation.registerComponent('Splash', () => SplashScreen);
 Navigation.registerComponent('Login', () => LoginScreen);
 Navigation.registerComponent('Home', () => HomeScreen);
 Navigation.registerComponent('Settings', () => SettingsScreen);
 
-const loginRoot = {
+
+const initRoot = {
   root: {
     component: {
-      name: 'Login'
+      name: 'Splash'
     }
   }
 };
@@ -39,6 +42,6 @@ Navigation.setDefaultOptions({
 });
 
 Navigation.events().registerAppLaunchedListener(async () => {
-  Navigation.setRoot(loginRoot);
+  Navigation.setRoot(initRoot);
 });
 
