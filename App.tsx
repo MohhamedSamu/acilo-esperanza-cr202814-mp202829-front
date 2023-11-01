@@ -27,6 +27,9 @@ import {
 
 import { PaperProvider } from 'react-native-paper';
 
+import { useAuthentication } from './utils/hooks/useAuthentication';
+
+import './config/firebase';
 
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -64,6 +67,14 @@ function App(): JSX.Element {
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
+
+  const { user } = useAuthentication();
+
+  if (user){
+    console.log("we have a user signed in")
+  } else {
+    console.log("we dont have a user signed in")
+  }
 
   return (
     <PaperProvider>

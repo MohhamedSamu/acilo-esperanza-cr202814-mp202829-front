@@ -12,31 +12,56 @@ import { emailValidator, passwordValidator } from '../src/core/utils';
 import { NavigationP } from '../src/types';
 import { Navigation } from "react-native-navigation";
 
+import '../config/firebase';
+
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+
+const auth = getAuth();
+
 type Props = {
   navigation: NavigationP;
 };
 
-const LoginScreen = ({ navigation }: Props) => {
+const LoginScreen = ({ navigation }: Props) =>
+{
   const [email, setEmail] = useState({ value: '', error: '' });
   const [password, setPassword] = useState({ value: '', error: '' });
+  const [isLoading, setIsLoading] = useState(false);
 
-  const _onLoginPressed = () => {
+  const _onLoginPressed = async () =>
+  {
     const emailError = emailValidator(email.value);
     const passwordError = passwordValidator(password.value);
-
-    if (emailError || passwordError) {
+    
+    if (emailError || passwordError)
+    {
       setEmail({ ...email, error: emailError });
       setPassword({ ...password, error: passwordError });
       return;
     }
+    
+    setIsLoading(true);
 
-    const user: User = {
-      name: 'Walter',
-      email: email.value
+    try
+    {
+      let userCreds = await signInWithEmailAndPassword(auth, email.value, password.value);
+      
+      setIsLoading(false);
+
+      const user: User = {
+        name: 'Walter',
+        email: email.value
+      }
+      
+      console.log("user", userCreds)
+      Navigation.setRoot(mainRoot(user));
+    } catch (error)
+    {
+      setIsLoading(false);
+
+      
+        // TODO SHOW ERROR
     }
-
-    Navigation.setRoot(mainRoot(user) );
-
   };
 
   return (
@@ -78,7 +103,7 @@ const LoginScreen = ({ navigation }: Props) => {
         </TouchableOpacity>
       </View>
 
-      <Button mode="contained" onPress={_onLoginPressed}>
+      <Button mode="contained" loading={isLoading} onPress={_onLoginPressed}>
         Iniciar sesión
       </Button>
 
@@ -88,7 +113,10 @@ const LoginScreen = ({ navigation }: Props) => {
           <Text style={styles.link}>Google ?</Text>
         </TouchableOpacity>
       </View>
+
     </Background>
+
+
   );
 };
 
