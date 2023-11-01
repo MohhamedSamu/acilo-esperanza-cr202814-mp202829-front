@@ -6,5 +6,6 @@ export interface DoctoresInterface {
   nacimiento?: Date,
   titulo?: string,
   picture?: string,
+  key?: string;
 }
 
