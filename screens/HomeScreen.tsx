@@ -2,17 +2,35 @@ import { StyleSheet, View } from "react-native";
 import { Navigation } from "react-native-navigation";
 import { loginRoot } from "../src/core/roots";
 import { Text, Button, Card } from 'react-native-paper';
-
-
-import React from "react";
+import DoctoresService  from "../src/services/DoctoresService";
+import React, { useState, useEffect } from "react";
+import { DoctoresInterface } from "../src/interfaces/DoctoresInterface";
 
 const HomeScreen = (props: any) => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [datos, setDatos] = useState<DoctoresInterface[]>();
+
+  useEffect(() => {
+    setIsLoading(true);
+    listarDoctores();
+  }, []);
+
+  const listarDoctores = () => {
+    DoctoresService.getDoctores().then((response: DoctoresInterface[]) => {
+      setDatos(response);
+      setIsLoading(false);
+    }).catch(error => {
+      console.log(error);
+    });
+  }
+
   return (
     <View style={styles.root}>
 
       <Text variant="displayLarge">Display Large</Text>
       <Text> </Text>
-      <Text>Hello React Native Navigation 👋 </Text>
+      <Text>Hellou React Native Navigation 👋 </Text>
 
       {props.user !== null && props.user !== undefined && (
         <Text >El correo es: {props.user.email}</Text>
@@ -27,6 +45,12 @@ const HomeScreen = (props: any) => {
         })}>
       Push Settings Screen
       </Button>
+
+      {datos && datos.map((prop: DoctoresInterface) => (
+          <Text> {prop.id} - {prop.email}</Text>
+        )
+      )}
+
 
       <Button icon="camera" mode="contained" onPress={() => Navigation.setRoot(loginRoot())}>
         Logout
