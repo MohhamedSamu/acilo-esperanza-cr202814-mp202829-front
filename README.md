@@ -36,3 +36,7 @@ Si deseas utilizar o distribuir este proyecto de acuerdo con esta licencia, aseg
 Si tienes alguna pregunta o necesitas permisos adicionales que no estén cubiertos por esta licencia, no dudes en ponerte en contacto con nosotros a través de sfernandocalderon@gmail.com o con waltermejia61@hotmail.com
 
 ¡Gracias por tu interés en nuestro proyecto!
+
+
+### comandos utiles:
+npm start --reset-cache
