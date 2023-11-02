@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { Image, ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Navigation } from "react-native-navigation";
 import { loginRoot } from "../src/core/roots";
 import { Text, Button, Card } from 'react-native-paper';
@@ -43,68 +43,96 @@ const HomeScreen = (props: any) => {
   }
 
   return (
-    <View style={styles.root}>
+    <ScrollView>
+      <View style={styles.root}>
 
-      {/*<Text variant="displayLarge">Display Large</Text>*/}
-      {/*<Text> </Text>*/}
-      {/*<Text>Hellou React Native Navigation 👋 </Text>*/}
 
-      {/*{props.user !== null && props.user !== undefined && (*/}
-      {/*  <Text >El correo es: {props.user.email}</Text>*/}
-      {/*)}*/}
+        {/*<Text variant="displayLarge">Display Large</Text>*/}
+        {/*<Text> </Text>*/}
+        {/*<Text>Hellou React Native Navigation 👋 </Text>*/}
 
-      {/*<Button icon="camera" mode="contained" onPress={() => navegarSettings()}>*/}
-      {/*Push Settings Screen*/}
-      {/*</Button>*/}
+        {/*{props.user !== null && props.user !== undefined && (*/}
+        {/*  <Text >El correo es: {props.user.email}</Text>*/}
+        {/*)}*/}
 
-      {/*{!isLoading && datos.map((prop: DoctoresInterface, index) => (*/}
-      {/*    <Text key={prop.id}> {prop.id} - {prop.email} </Text>*/}
-      {/*  )*/}
-      {/*)}*/}
+        {/*<Button icon="camera" mode="contained" onPress={() => navegarSettings()}>*/}
+        {/*Push Settings Screen*/}
+        {/*</Button>*/}
 
-      <View style={styles.row}>
-        <Text style={styles.label}>Listados de Doctores</Text>
+        {/*{!isLoading && datos.map((prop: DoctoresInterface, index) => (*/}
+        {/*    <Text key={prop.id}> {prop.id} - {prop.email} </Text>*/}
+        {/*  )*/}
+        {/*)}*/}
 
-        <Text style={styles.label}> </Text>
-        <TouchableOpacity onPress={() => navegarSettings() }>
-          <Text style={styles.link}>Ver Todos</Text>
-        </TouchableOpacity>
+        <View style={styles.row}>
+          <Text style={styles.label}>Lista de Doctores</Text>
+
+          <Text style={styles.label}> </Text>
+          <TouchableOpacity onPress={() => navegarSettings() }>
+            <Text style={styles.link}>Ver Todos</Text>
+          </TouchableOpacity>
+        </View>
+
+        <Carousel
+          style={ {flex: 1} }
+          loop={true}
+          layout={'default'}
+          data={datos}
+          renderItem={(item) => CardItem(item, props, 'Settings')}
+          sliderWidth={440}
+          itemWidth={180}
+          useScrollView={true}
+          onSnapToItem={(index) => setIndex(index)}
+        />
+
+        <Text> </Text>
+
+        <View style={styles.row}>
+          <Text style={styles.label}>Pacientes recientes</Text>
+
+          <Text style={styles.label}> </Text>
+          <TouchableOpacity onPress={() => navegarSettings() }>
+            <Text style={styles.link}>Ver Todos</Text>
+          </TouchableOpacity>
+        </View>
+
+        <Carousel
+          style={ {flex: 1} }
+          loop={true}
+          layout={'default'}
+          data={datos}
+          renderItem={(item) => CardItem(item, props, 'Settings')}
+          sliderWidth={440}
+          itemWidth={180}
+          useScrollView={true}
+          onSnapToItem={(index) => setIndex(index)}
+        />
+
+        {/*<Pagination*/}
+        {/*  dotsLength={datos.length}*/}
+        {/*  activeDotIndex={index}*/}
+        {/*  ref={isCarousel}*/}
+        {/*  dotStyle={{*/}
+        {/*    width: 10,*/}
+        {/*    height: 10,*/}
+        {/*    borderRadius: 5,*/}
+        {/*    marginHorizontal: 0,*/}
+        {/*    backgroundColor: 'rgba(0, 0, 0, 0.92)'*/}
+        {/*  }}*/}
+        {/*  inactiveDotOpacity={0.4}*/}
+        {/*  inactiveDotScale={0.6}*/}
+        {/*  tappableDots={true}*/}
+        {/*/>*/}
+
+        <View style={{alignItems: 'center', justifyContent: 'center', marginTop: 30}}>
+          <Button icon="camera" mode="contained"  onPress={() => Navigation.setRoot(loginRoot())}>
+            Logout
+          </Button>
+        </View>
+
+
       </View>
-
-      <Carousel
-        loop={false}
-        layout={'default'}
-        data={datos}
-        renderItem={CardItem}
-        sliderWidth={500}
-        itemWidth={200}
-        useScrollView={true}
-        layoutCardOffset={9}
-        ref={isCarousel}
-        onSnapToItem={(index) => setIndex(index)}
-      />
-
-      {/*<Pagination*/}
-      {/*  dotsLength={datos.length}*/}
-      {/*  activeDotIndex={index}*/}
-      {/*  ref={isCarousel}*/}
-      {/*  dotStyle={{*/}
-      {/*    width: 10,*/}
-      {/*    height: 10,*/}
-      {/*    borderRadius: 5,*/}
-      {/*    marginHorizontal: 0,*/}
-      {/*    backgroundColor: 'rgba(0, 0, 0, 0.92)'*/}
-      {/*  }}*/}
-      {/*  inactiveDotOpacity={0.4}*/}
-      {/*  inactiveDotScale={0.6}*/}
-      {/*  tappableDots={true}*/}
-      {/*/>*/}
-
-      <Button icon="camera" mode="contained" onPress={() => Navigation.setRoot(loginRoot())}>
-        Logout
-      </Button>
-
-    </View>
+    </ScrollView>
   );
 };
 
@@ -122,21 +150,21 @@ HomeScreen.options = {
 
 const styles = StyleSheet.create({
   root: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'whitesmoke'
+    // alignItems: 'center',
+    // justifyContent: 'center',
+    backgroundColor: 'whitesmoke',
+    padding: 10
   },
   row: {
     flexDirection: 'row',
     marginTop: 15,
     marginBottom: 10,
-    alignContent: 'space-between',
+    justifyContent: 'space-between',
   },
   label: {
     color: theme.colors.secondary,
     fontWeight: 'bold',
-
+    fontSize: 16,
   },
   link: {
     color: theme.colors.secondary,
