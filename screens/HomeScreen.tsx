@@ -1,21 +1,18 @@
-import { Image, ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
+import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Navigation } from "react-native-navigation";
 import { loginRoot } from "../src/core/roots";
-import { Text, Button, Card } from 'react-native-paper';
+import { Text, Button } from 'react-native-paper';
 import DoctoresService  from "../src/services/DoctoresService";
 import React, { useState, useEffect } from "react";
 import { DoctoresInterface } from "../src/interfaces/DoctoresInterface";
 
-import Carousel, { Pagination } from 'react-native-snap-carousel';
+import Carousel from 'react-native-snap-carousel';
 import CardItem from "../src/components/CardItem";
 import { theme } from "../src/core/theme";
 
 const HomeScreen = (props: any) => {
   const [isLoading, setIsLoading] = useState(false);
-
   const [datos, setDatos] = useState<DoctoresInterface[]>([]);
-  const isCarousel = React.useRef(null)
-  const [index, setIndex] = React.useState(0)
 
   useEffect(() => {
     setIsLoading(true);
@@ -31,10 +28,10 @@ const HomeScreen = (props: any) => {
     });
   }
 
-  const navegarSettings = () => {
+  const navegarList = (screen: string) => {
     Navigation.push(props.componentId, {
       component: {
-        name: 'Settings',
+        name: screen,
         passProps: {
           count: 5
         }
@@ -68,7 +65,7 @@ const HomeScreen = (props: any) => {
           <Text style={styles.label}>Lista de Doctores</Text>
 
           <Text style={styles.label}> </Text>
-          <TouchableOpacity onPress={() => navegarSettings() }>
+          <TouchableOpacity onPress={() => navegarList('DoctoresList') }>
             <Text style={styles.link}>Ver Todos</Text>
           </TouchableOpacity>
         </View>
@@ -82,7 +79,6 @@ const HomeScreen = (props: any) => {
           sliderWidth={440}
           itemWidth={180}
           useScrollView={true}
-          onSnapToItem={(index) => setIndex(index)}
         />
 
         <Text> </Text>
@@ -91,7 +87,7 @@ const HomeScreen = (props: any) => {
           <Text style={styles.label}>Pacientes recientes</Text>
 
           <Text style={styles.label}> </Text>
-          <TouchableOpacity onPress={() => navegarSettings() }>
+          <TouchableOpacity onPress={() => navegarList('DoctoresList') }>
             <Text style={styles.link}>Ver Todos</Text>
           </TouchableOpacity>
         </View>
@@ -105,7 +101,6 @@ const HomeScreen = (props: any) => {
           sliderWidth={440}
           itemWidth={180}
           useScrollView={true}
-          onSnapToItem={(index) => setIndex(index)}
         />
 
         {/*<Pagination*/}

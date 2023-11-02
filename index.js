@@ -5,11 +5,13 @@ import SettingsScreen from "./screens/SettingsScreen";
 import HomeScreen from "./screens/HomeScreen";
 import LoginScreen from "./screens/LoginScreen";
 import SplashScreen from "./screens/SplashScreen";
+import DoctoresListScreen from "./screens/DoctoresScreens/DoctoresListScreen";
 
 Navigation.registerComponent('Splash', () => SplashScreen);
 Navigation.registerComponent('Login', () => LoginScreen);
 Navigation.registerComponent('Home', () => HomeScreen);
 Navigation.registerComponent('Settings', () => SettingsScreen);
+Navigation.registerComponent('DoctoresList', () => DoctoresListScreen);
 
 
 const initRoot = {
