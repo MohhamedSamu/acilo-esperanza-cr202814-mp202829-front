@@ -25,12 +25,18 @@ const DoctoresListScreen = (props: any) => {
     DoctoresService.getDoctores().then((response: DoctoresInterface[]) => {
       const hoy = moment();
       response.forEach(d => {
-        // console.log(d.nacimiento);
-        // const myDate = moment(d.nacimiento);
-        // console.log(myDate);
-        // d.edad = hoy.diff(d.nacimiento, 'years');
+        var month = d.nacimiento.split("/")[0];
+        var day = d.nacimiento.split("/")[1];
+        var year = d.nacimiento.split("/")[2];
+
+        const myDate = moment(`${year}-${month}-${day}`);
+
+        d.edad = hoy.diff(myDate, 'years');
       })
+      console.log("response", response)
+
       setDatos(response);
+
     }).catch(error => {
       console.log(error);
     });
