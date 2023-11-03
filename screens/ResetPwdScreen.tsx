@@ -126,8 +126,6 @@ const ResetPwdScreen = () =>
 
       </Background>
     </PaperProvider>
-
-
   );
 };
 
