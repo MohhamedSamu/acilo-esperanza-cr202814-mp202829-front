@@ -11,21 +11,26 @@ import Button from '../../src/components/Button';
 import DoctoresService  from "../../src/services/DoctoresService";
 import { DoctoresInterface } from "../../src/interfaces/DoctoresInterface";
 import { Navigation } from "react-native-navigation";
+import moment from 'moment';
 
 const DoctoresListScreen = (props: any) => {
 
-  const [isLoading, setIsLoading] = useState(false);
   const [datos, setDatos] = useState<DoctoresInterface[]>([]);
 
   useEffect(() => {
-    setIsLoading(true);
     listarDoctores();
   }, []);
 
   const listarDoctores = () => {
     DoctoresService.getDoctores().then((response: DoctoresInterface[]) => {
+      const hoy = moment();
+      response.forEach(d => {
+        // console.log(d.nacimiento);
+        // const myDate = moment(d.nacimiento);
+        // console.log(myDate);
+        // d.edad = hoy.diff(d.nacimiento, 'years');
+      })
       setDatos(response);
-      setIsLoading(false);
     }).catch(error => {
       console.log(error);
     });
@@ -64,9 +69,9 @@ const DoctoresListScreen = (props: any) => {
                     flex
                     borderless
                     style={styles.card}
-                    title={card.nombre}
-                    caption={card.nombre}
-                    location={card.nombre}
+                    title={card.nombres + ' ' + card.apellidos}
+                    caption={card.titulo}
+                    location={card.edad + ' años'}
                     avatar={'https://picsum.photos/id/'+ id +'/800'}
                     imageStyle={styles.rounded}
               />

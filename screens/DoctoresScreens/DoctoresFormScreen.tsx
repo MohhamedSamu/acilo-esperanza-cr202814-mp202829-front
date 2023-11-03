@@ -1,10 +1,14 @@
-import { StyleSheet, Text, View } from "react-native";
-import React, { useState } from "react";
+import { StyleSheet, Text, View, Pressable, ScrollView } from "react-native";
+import React, { useEffect, useState } from "react";
 import Background from "../../src/components/Background";
 import TextInput from "../../src/components/TextInput";
 import Button from "../../src/components/Button";
 import { theme } from "../../src/core/theme";
-import { emailValidator, nameValidator, passwordValidator } from "../../src/core/utils";
+import { emailValidator, nameValidator } from "../../src/core/utils";
+import RNDateTimePicker from "@react-native-community/datetimepicker";
+import moment from 'moment';
+import DoctoresService  from "../../src/services/DoctoresService";
+import { DoctoresInterface } from "../../src/interfaces/DoctoresInterface";
 
 const DoctoresFormScreen = (props: any) => {
   const editarDatos = props.id != null && props.id != undefined;
@@ -15,31 +19,104 @@ const DoctoresFormScreen = (props: any) => {
   const [nacimiento, setNacimiento] = useState({ value: '', error: '' });
   const [titulo, setTitulo] = useState({ value: '', error: '' });
   const [picture, setPicture] = useState({ value: '', error: '' });
+  const [password, setPassword] = useState({ value: '', error: '' });
 
-  const onSaveDoctor = () => {
+  const [date, setDate] = useState(new Date());
+  const [showPicker, setShowPicker] = useState(false);
+
+  useEffect(() => {
+    if(editarDatos){
+      findDoctor(props.id);
+    }
+  }, []);
+
+  const findDoctor = (id: string) => {
+    DoctoresService.getDoctor(id).then((response: DoctoresInterface) => {
+      console.log(response);
+      setEmail({  value: response.email, error: '' });
+      setNombres({  value: response.nombres, error: '' });
+      setApellidos({  value: response.apellidos, error: '' });
+      setNacimiento({  value: response.nacimiento, error: '' });
+      setTitulo({  value: response.titulo, error: '' });
+    }).catch(error => {
+      console.log(error);
+    });
+  }
+
+  const onSubmitDoctor = () => {
     const emailError = emailValidator(email.value);
     const nombresError = nameValidator(nombres.value);
     const apellidosError = nameValidator(apellidos.value);
     const tituloError = nameValidator(titulo.value);
+    const nacimientoError = nameValidator(nacimiento.value);
 
-    if (emailError || nombresError || apellidosError || tituloError) {
+    if (emailError || nombresError || apellidosError || tituloError || nacimientoError) {
       setEmail({ ...email, error: emailError });
       setNombres({ ...nombres, error: nombresError });
       setApellidos({ ...apellidos, error: apellidosError });
       setTitulo({ ...titulo, error: tituloError });
+      setNacimiento({ ...nacimiento, error: nacimientoError });
       return;
     }
 
-    if(editarDatos){
+    const doctor: DoctoresInterface = {
+      email: email.value,
+      apellidos: apellidos.value,
+      nombres: nombres.value,
+      nacimiento: nacimiento.value,
+      titulo: titulo.value,
+      picture: '',
+    };
 
+    console.log(doctor);
+    if(editarDatos){
+      doctor.id = props.id;
+      actualizarDoctor(doctor);
     } else {
       //Metodo para guardar Doctor
-
+      guardarDoctor(doctor);
     }
   };
 
+  const guardarDoctor = (doctor: DoctoresInterface) => {
+    DoctoresService.createDoctor(doctor)
+      .then(response => {
+        console.log(response);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+
+  const actualizarDoctor = (doctor: DoctoresInterface) => {
+    DoctoresService.updateDoctor(doctor)
+      .then(response => {
+        console.log(response);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+
+  const toggleDatePicker = () => {
+    setShowPicker(!showPicker);
+  }
+
+  const onChange = (event: any, selectedDate: any ) => {
+    console.log(event);
+    if(event.type == "set"){
+      const currentDate = selectedDate;
+      setDate(currentDate);
+      toggleDatePicker();
+      setNacimiento({  value: moment(currentDate).format('L'), error: '' });
+    } else{
+      toggleDatePicker();
+    }
+  }
+
   return (
-    <Background>
+    <ScrollView>
+        <Background>
 
       <View style={styles.row}>
         <Text style={styles.label}>
@@ -67,15 +144,24 @@ const DoctoresFormScreen = (props: any) => {
         autoCapitalize="none"
       />
 
-      <TextInput
-        label="Nacimiento"
-        returnKeyType="next"
-        value={nacimiento.value}
-        onChangeText={text => setNacimiento({ value: text, error: '' })}
-        error={!!nacimiento.error}
-        errorText={nacimiento.error}
-        autoCapitalize="none"
-      />
+      { showPicker && (
+        <RNDateTimePicker mode="date" value={date}
+                          display="spinner" onChange={onChange}
+                          maximumDate={new Date('2023-12-31')}
+        />
+      )}
+
+      <Pressable onPress={toggleDatePicker} style={{width: '100%'}}>
+        <TextInput editable={false}
+                   label="Nacimiento"
+                   returnKeyType="next"
+                   value={nacimiento.value}
+                   onChangeText={text => setNacimiento({ value: text, error: '' })}
+                   error={!!nacimiento.error}
+                   errorText={nacimiento.error}
+                   autoCapitalize="none"
+        />
+      </Pressable>
 
       <TextInput
         label="Titulo"
@@ -100,13 +186,27 @@ const DoctoresFormScreen = (props: any) => {
         keyboardType="email-address"
       />
 
+          <TextInput
+            label="Contraseña"
+            returnKeyType="done"
+            value={password.value}
+            onChangeText={text => setPassword({ value: text, error: '' })}
+            error={!!password.error}
+            errorText={password.error}
+            secureTextEntry
+          />
+
+
+
       <View style={styles.container}>
-        <Button mode="contained" onPress={() => onSaveDoctor() }>
+        <Button mode="contained" onPress={() => onSubmitDoctor() }>
           { editarDatos ? 'Editar Doctor' : 'Guardar Doctor' }
         </Button>
       </View>
 
     </Background>
+    </ScrollView>
+
   );
 }
 

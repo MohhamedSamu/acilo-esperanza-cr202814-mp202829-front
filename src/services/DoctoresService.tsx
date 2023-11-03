@@ -3,6 +3,17 @@ import { DoctoresInterface } from "../interfaces/DoctoresInterface";
 
 const baseUrl = 'http://10.0.2.2:8080/doctores';
 
+const getDoctor = async (id: string) => {
+  const urlPut = baseUrl + '/' + id
+
+  const response = await axios.get(urlPut);
+  if (response.status === 200) {
+    return response.data.return[0];
+  } else {
+    throw new Error("Fallo al listar");
+  }
+}
+
 const getDoctores = async () => {
   const response = await axios.get(baseUrl);
   if (response.status === 200) {
@@ -41,4 +52,4 @@ const deleteDoctor = async (idDoctor: string) => {
   }
 }
 
-export default { getDoctores, createDoctor, updateDoctor, deleteDoctor }
+export default { getDoctor, getDoctores, createDoctor, updateDoctor, deleteDoctor }

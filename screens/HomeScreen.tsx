@@ -11,18 +11,15 @@ import CardItem from "../src/components/CardItem";
 import { theme } from "../src/core/theme";
 
 const HomeScreen = (props: any) => {
-  const [isLoading, setIsLoading] = useState(false);
   const [datos, setDatos] = useState<DoctoresInterface[]>([]);
 
   useEffect(() => {
-    setIsLoading(true);
     listarDoctores();
   }, []);
 
   const listarDoctores = () => {
     DoctoresService.getDoctores().then((response: DoctoresInterface[]) => {
       setDatos(response);
-      setIsLoading(false);
     }).catch(error => {
       console.log(error);
     });
@@ -102,28 +99,11 @@ const HomeScreen = (props: any) => {
           useScrollView={true}
         />
 
-        {/*<Pagination*/}
-        {/*  dotsLength={datos.length}*/}
-        {/*  activeDotIndex={index}*/}
-        {/*  ref={isCarousel}*/}
-        {/*  dotStyle={{*/}
-        {/*    width: 10,*/}
-        {/*    height: 10,*/}
-        {/*    borderRadius: 5,*/}
-        {/*    marginHorizontal: 0,*/}
-        {/*    backgroundColor: 'rgba(0, 0, 0, 0.92)'*/}
-        {/*  }}*/}
-        {/*  inactiveDotOpacity={0.4}*/}
-        {/*  inactiveDotScale={0.6}*/}
-        {/*  tappableDots={true}*/}
-        {/*/>*/}
-
         <View style={{alignItems: 'center', justifyContent: 'center', marginTop: 30}}>
           <Button icon="camera" mode="contained"  onPress={() => Navigation.setRoot(loginRoot())}>
             Logout
           </Button>
         </View>
-
 
       </View>
     </ScrollView>

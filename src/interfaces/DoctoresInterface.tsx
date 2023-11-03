@@ -3,9 +3,9 @@ export interface DoctoresInterface {
   email: string,
   nombres: string,
   apellidos: string,
-  nacimiento?: Date,
-  titulo?: string,
+  nacimiento: string,
+  titulo: string,
   picture?: string,
-  key?: string;
+  edad?: number,
 }
 
