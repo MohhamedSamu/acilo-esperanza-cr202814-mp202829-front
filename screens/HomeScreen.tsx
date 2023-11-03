@@ -43,7 +43,6 @@ const HomeScreen = (props: any) => {
     <ScrollView>
       <View style={styles.root}>
 
-
         {/*<Text variant="displayLarge">Display Large</Text>*/}
         {/*<Text> </Text>*/}
         {/*<Text>Hellou React Native Navigation 👋 </Text>*/}
@@ -75,7 +74,7 @@ const HomeScreen = (props: any) => {
           loop={true}
           layout={'default'}
           data={datos}
-          renderItem={(item) => CardItem(item, props, 'Settings')}
+          renderItem={(item) => CardItem(item, props, 'Doctor')}
           sliderWidth={440}
           itemWidth={180}
           useScrollView={true}
@@ -97,7 +96,7 @@ const HomeScreen = (props: any) => {
           loop={true}
           layout={'default'}
           data={datos}
-          renderItem={(item) => CardItem(item, props, 'Settings')}
+          renderItem={(item) => CardItem(item, props, 'Doctor')}
           sliderWidth={440}
           itemWidth={180}
           useScrollView={true}

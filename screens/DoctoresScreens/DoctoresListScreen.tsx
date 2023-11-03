@@ -12,8 +12,6 @@ import DoctoresService  from "../../src/services/DoctoresService";
 import { DoctoresInterface } from "../../src/interfaces/DoctoresInterface";
 import { Navigation } from "react-native-navigation";
 
-const BASE_SIZE = 16;
-
 const DoctoresListScreen = (props: any) => {
 
   const [isLoading, setIsLoading] = useState(false);
@@ -36,7 +34,7 @@ const DoctoresListScreen = (props: any) => {
   const navegarNuevo = (id?: string) => {
     Navigation.push(props.componentId, {
       component: {
-        name: 'NuevoDoctor',
+        name: 'Doctor',
         passProps: {
           id: id
         }
@@ -48,7 +46,6 @@ const DoctoresListScreen = (props: any) => {
     <Block safe flex style={{ backgroundColor: 'white' }}>
 
       <View style={styles.container}>
-
         <Button mode="contained" onPress={() => navegarNuevo() }>
           Nuevo Doctor
         </Button>
@@ -61,7 +58,7 @@ const DoctoresListScreen = (props: any) => {
       <ScrollView contentContainerStyle={styles.cards}>
         <Block flex space="between">
           {datos && datos.map((card, id) => (
-            <TouchableOpacity onPress={() => navegarNuevo(card.id) } style={styles.cards}>
+            <TouchableOpacity onPress={() => navegarNuevo(card.id) } style={styles.cards} key={'touch-'+id}>
               <Card
                     key={'card-'+id}
                     flex
@@ -70,7 +67,7 @@ const DoctoresListScreen = (props: any) => {
                     title={card.nombre}
                     caption={card.nombre}
                     location={card.nombre}
-                    avatar="http://i.pravatar.cc/100?id=skater"
+                    avatar={'https://picsum.photos/id/'+ id +'/800'}
                     imageStyle={styles.rounded}
               />
             </TouchableOpacity>
@@ -117,5 +114,16 @@ const styles= StyleSheet.create({
     justifyContent: 'center',
   },
 });
+
+DoctoresListScreen.options = {
+  topBar: {
+    title: {
+      text: 'Doctores'
+    }
+  },
+  bottomTab: {
+    text: 'Doctores'
+  }
+}
 
 export default DoctoresListScreen;

@@ -14,7 +14,7 @@ export const passwordValidator = (password: string) => {
 };
 
 export const nameValidator = (name: string) => {
-  if (!name || name.length <= 0) return 'Debes ingresar un valor.';
+  if (!name || name.length <= 0) return 'Debes completar el campo.';
 
   return '';
 };

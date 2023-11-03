@@ -5,12 +5,12 @@ import { Navigation } from "react-native-navigation";
 
 const CardItem = ({item, index}: any, props: any, screenName: string) => {
 
-  const navegarSettings = () => {
+  const navegarSettings = (id?: string) => {
     Navigation.push(props.componentId, {
       component: {
         name: screenName,
         passProps: {
-          count: item.nombre
+          id: id
         }
       }
     })
@@ -19,10 +19,10 @@ const CardItem = ({item, index}: any, props: any, screenName: string) => {
   return (
     <View style={styles.container} key={index}>
       <Image
-        source={{ uri: 'https://picsum.photos/800' }}
+        source={{ uri: 'https://picsum.photos/id/'+ index +'/800' }}
         style={styles.image}
       />
-      <TouchableOpacity onPress={() => navegarSettings() }>
+      <TouchableOpacity onPress={() => navegarSettings(item.id) }>
         <Text style={styles.header}>Dr. {item.nombre}</Text>
 
         <Text style={styles.body}>{item.nombre}</Text>

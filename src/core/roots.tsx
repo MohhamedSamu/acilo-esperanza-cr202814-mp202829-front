@@ -22,6 +22,19 @@ export const mainRoot = (user: User) => {
             stack: {
               children: [
                 {
+                  id: 'DoctoresList',
+                  component: {
+                    name: 'DoctoresList',
+
+                  }
+                }
+              ]
+            }
+          },
+          {
+            stack: {
+              children: [
+                {
                   id: 'Settings',
                   component: {
                     name: 'Settings',
