@@ -4,6 +4,7 @@ import { Navigation } from 'react-native-navigation';
 import SettingsScreen from "./screens/SettingsScreen";
 import HomeScreen from "./screens/HomeScreen";
 import LoginScreen from "./screens/LoginScreen";
+import ResetPwdScreen from "./screens/ResetPwdScreen";
 import SplashScreen from "./screens/SplashScreen";
 import DoctoresListScreen from "./screens/DoctoresScreens/DoctoresListScreen";
 import DoctoresFormScreen from "./screens/DoctoresScreens/DoctoresFormScreen";
@@ -14,6 +15,7 @@ Navigation.registerComponent('Home', () => HomeScreen);
 Navigation.registerComponent('Settings', () => SettingsScreen);
 Navigation.registerComponent('DoctoresList', () => DoctoresListScreen);
 Navigation.registerComponent('Doctor', () => DoctoresFormScreen);
+Navigation.registerComponent('ResetPwd', () => ResetPwdScreen);
 
 
 const initRoot = {

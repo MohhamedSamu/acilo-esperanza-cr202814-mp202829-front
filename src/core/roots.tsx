@@ -56,7 +56,17 @@ export const loginRoot = () => {
   return {
     root: {
       component: {
-        name: "Login",
+        name: "Login"
+      }
+    }
+  }
+};
+
+export const resetPwdRoot = () => {
+  return {
+    root: {
+      component: {
+        name: "ResetPwd"
       }
     }
   }

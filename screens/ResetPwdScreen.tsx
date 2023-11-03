@@ -6,7 +6,7 @@ import Header from '../src/components/Header';
 import Button from '../src/components/Button';
 import TextInput from '../src/components/TextInput';
 import Toaster from '../src/components/Toaster';
-import { mainRoot, User, resetPwdRoot } from '../src/core/roots';
+import { loginRoot, User } from '../src/core/roots';
 
 import { theme } from '../src/core/theme';
 import { emailValidator, passwordValidator } from '../src/core/utils';
@@ -14,16 +14,17 @@ import { NavigationP } from '../src/types';
 import { Navigation } from "react-native-navigation";
 import { PaperProvider } from 'react-native-paper';
 
+import AuthService  from "../src/services/AuthService";
+
 import '../config/firebase';
 
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
 
 const auth = getAuth();
 
-const LoginScreen = (props: any) =>
+const ResetPwdScreen = () =>
 {
   const [email, setEmail] = useState({ value: '', error: '' });
-  const [password, setPassword] = useState({ value: '', error: '' });
   const [isLoading, setIsLoading] = useState(false);
 
   const [visible, setVisible] = React.useState(false);
@@ -37,15 +38,13 @@ const LoginScreen = (props: any) =>
   }
   const hideModal = () => setVisible(false);
 
-  const _onLoginPressed = async () =>
+  const _onResetPressed = async () =>
   {
     const emailError = emailValidator(email.value);
-    const passwordError = passwordValidator(password.value);
 
-    if (emailError || passwordError)
+    if (emailError)
     {
       setEmail({ ...email, error: emailError });
-      setPassword({ ...password, error: passwordError });
       return;
     }
 
@@ -53,39 +52,45 @@ const LoginScreen = (props: any) =>
 
     try
     {
-      let userCreds = await signInWithEmailAndPassword(auth, email.value, password.value);
-
-      setIsLoading(false);
-
-      const user: User = {
-        name: 'Walter',
-        email: email.value
-      }
-      console.log("user", userCreds)
-      Navigation.setRoot(mainRoot(user));
+      AuthService.getUserProfile(email.value).then((response:any) => {
+        sendPasswordResetEmail(auth, email.value).then((data) => {
+          setIsLoading(false);
+          showModal('success', 'Email enviado!')
+        }).catch(error => {
+          showModal('danger', error.message)
+          console.log("error", error) 
+          setIsLoading(false);
+        });
+      }).catch(error => {
+        if (error.message == "Request failed with status code 400"){
+          showModal('danger', "Email no encontrado")
+          console.log("error", error)
+        }else{
+          showModal('danger', error.message)
+          console.log("error", error)
+        }
+        setIsLoading(false);
+      });
     } catch (error: any)
     {
       setIsLoading(false);
-      if (error.message == "Firebase: Error (auth/invalid-login-credentials)."){
-        showModal('danger', 'Credenciales incorrectas')
-      }else{
-        showModal('danger', 'Algo malo ocurrio ...')
-        console.log("error", error.message)
-      }
+      showModal('danger', 'El email no se pudo enviar ...')
+      console.log("error", error.message)
     }
   };
 
-  const goToPwd = () => {
-    Navigation.setRoot(resetPwdRoot());
+  const goToLogin = () => {
+    Navigation.setRoot(loginRoot());
   }
 
   return (
     <PaperProvider>
       <Background>
+        {/*<BackButton goBack={() => navigation.navigate('HomeScreen')} />*/}
 
         <Logo />
 
-        <Header>Bienvenido</Header>
+        <Header>Recupera tu contraseña</Header>
 
         <TextInput
           label="Email"
@@ -100,34 +105,17 @@ const LoginScreen = (props: any) =>
           keyboardType="email-address"
         />
 
-        <TextInput
-          label="Contraseña"
-          returnKeyType="done"
-          value={password.value}
-          onChangeText={text => setPassword({ value: text, error: '' })}
-          error={!!password.error}
-          errorText={password.error}
-          secureTextEntry
-        />
-
         <View style={styles.forgotPassword}>
           <TouchableOpacity
-            onPress={ goToPwd }
+            onPress={ goToLogin }
           >
-            <Text style={styles.label}>Olvidaste tú contraseña?</Text>
+            <Text style={styles.label}>Iniciar Sesion</Text>
           </TouchableOpacity>
         </View>
 
-        <Button mode="contained" loading={isLoading} onPress={_onLoginPressed}>
-          Iniciar sesión
+        <Button mode="contained" loading={isLoading} onPress={_onResetPressed}>
+          Reiniciar contraseña
         </Button>
-
-        <View style={styles.row}>
-          <Text style={styles.label}>¿Deseas loguearte con </Text>
-          <TouchableOpacity>
-            <Text style={styles.link}>Google ?</Text>
-          </TouchableOpacity>
-        </View>
 
         <Toaster
           visible={visible}
@@ -163,4 +151,4 @@ const styles = StyleSheet.create({
 });
 
 
-export default LoginScreen;
+export default ResetPwdScreen;
