@@ -7,10 +7,14 @@ import { theme } from "../../src/core/theme";
 import { emailValidator, nameValidator, passwordValidator } from "../../src/core/utils";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 import moment from 'moment';
-import DoctoresService  from "../../src/services/DoctoresService";
+import DoctoresService from "../../src/services/DoctoresService";
 import { DoctoresInterface } from "../../src/interfaces/DoctoresInterface";
 
-const DoctoresFormScreen = (props: any) => {
+import { ActivityIndicator, MD2Colors } from 'react-native-paper';
+
+
+const DoctoresFormScreen = (props: any) =>
+{
   const editarDatos = props.id != null && props.id != undefined;
 
   const [email, setEmail] = useState({ value: '', error: '' });
@@ -24,26 +28,38 @@ const DoctoresFormScreen = (props: any) => {
   const [date, setDate] = useState(new Date());
   const [showPicker, setShowPicker] = useState(false);
 
-  useEffect(() => {
-    if(editarDatos){
+  const [loadingData, setLoadingData] = useState(true);
+
+  useEffect(() =>
+  {
+    if (editarDatos)
+    {
       findDoctor(props.id);
+      setLoadingData(true);
+    }else{
+      setLoadingData(false);
     }
   }, []);
 
-  const findDoctor = (id: string) => {
-    DoctoresService.getDoctor(id).then((response: DoctoresInterface) => {
+  const findDoctor = (id: string) =>
+  {
+    DoctoresService.getDoctor(id).then((response: DoctoresInterface) =>
+    {
       console.log(response);
-      setEmail({  value: response.email, error: '' });
-      setNombres({  value: response.nombres, error: '' });
-      setApellidos({  value: response.apellidos, error: '' });
-      setNacimiento({  value: response.nacimiento, error: '' });
-      setTitulo({  value: response.titulo, error: '' });
-    }).catch(error => {
+      setEmail({ value: response.email, error: '' });
+      setNombres({ value: response.nombres, error: '' });
+      setApellidos({ value: response.apellidos, error: '' });
+      setNacimiento({ value: response.nacimiento, error: '' });
+      setTitulo({ value: response.titulo, error: '' });
+      setLoadingData(false);
+    }).catch(error =>
+    {
       console.log(error);
     });
   }
 
-  const onSubmitDoctor = () => {
+  const onSubmitDoctor = () =>
+  {
     const emailError = emailValidator(email.value);
     const nombresError = nameValidator(nombres.value);
     const apellidosError = nameValidator(apellidos.value);
@@ -51,7 +67,8 @@ const DoctoresFormScreen = (props: any) => {
     const nacimientoError = nameValidator(nacimiento.value);
     const passwordError = passwordValidator(password.value);
 
-    if (emailError || nombresError || apellidosError || tituloError || nacimientoError) {
+    if (emailError || nombresError || apellidosError || tituloError || nacimientoError)
+    {
       setEmail({ ...email, error: emailError });
       setNombres({ ...nombres, error: nombresError });
       setApellidos({ ...apellidos, error: apellidosError });
@@ -60,9 +77,11 @@ const DoctoresFormScreen = (props: any) => {
       return;
     }
 
-    if( !editarDatos ){
+    if (!editarDatos)
+    {
       console.log('entra a error?');
-      if(passwordError){
+      if (passwordError)
+      {
         setPassword({ ...password, error: passwordError });
         return;
       }
@@ -78,126 +97,139 @@ const DoctoresFormScreen = (props: any) => {
     };
 
     console.log(doctor);
-    if(editarDatos){
+    if (editarDatos)
+    {
       doctor.id = props.id;
       actualizarDoctor(doctor);
-    } else {
+    } else
+    {
       //Metodo para guardar Doctor
       doctor.password = password.value;
       guardarDoctor(doctor);
     }
   };
 
-  const guardarDoctor = (doctor: DoctoresInterface) => {
+  const guardarDoctor = (doctor: DoctoresInterface) =>
+  {
     DoctoresService.createDoctor(doctor)
-      .then(response => {
+      .then(response =>
+      {
         console.log(response);
       })
-      .catch(error => {
+      .catch(error =>
+      {
         console.log(error);
       });
   }
 
-  const actualizarDoctor = (doctor: DoctoresInterface) => {
+  const actualizarDoctor = (doctor: DoctoresInterface) =>
+  {
     DoctoresService.updateDoctor(doctor)
-      .then(response => {
+      .then(response =>
+      {
         console.log(response);
       })
-      .catch(error => {
+      .catch(error =>
+      {
         console.log(error);
       });
   }
 
-  const toggleDatePicker = () => {
+  const toggleDatePicker = () =>
+  {
     setShowPicker(!showPicker);
   }
 
-  const onChange = (event: any, selectedDate: any ) => {
+  const onChange = (event: any, selectedDate: any) =>
+  {
     console.log(event);
-    if(event.type == "set"){
+    if (event.type == "set")
+    {
       const currentDate = selectedDate;
       setDate(currentDate);
       toggleDatePicker();
-      setNacimiento({  value: moment(currentDate).format('L'), error: '' });
-    } else{
+      setNacimiento({ value: moment(currentDate).format('L'), error: '' });
+    } else
+    {
       toggleDatePicker();
     }
   }
 
   return (
     <ScrollView>
+      {!loadingData ?
         <Background>
 
-      <View style={styles.row}>
-        <Text style={styles.label}>
-          { editarDatos ? 'Editar Doctor' : 'Nuevo Doctor' }
-        </Text>
-      </View>
+          <View style={styles.row}>
+            <Text style={styles.label}>
+              {editarDatos ? 'Editar Doctor' : 'Nuevo Doctor'}
+            </Text>
+          </View>
 
-      <TextInput
-        label="Nombres"
-        returnKeyType="next"
-        value={nombres.value}
-        onChangeText={text => setNombres({ value: text, error: '' })}
-        error={!!nombres.error}
-        errorText={nombres.error}
-        autoCapitalize="none"
-      />
+          <TextInput
+            label="Nombres"
+            returnKeyType="next"
+            value={nombres.value}
+            onChangeText={text => setNombres({ value: text, error: '' })}
+            error={!!nombres.error}
+            errorText={nombres.error}
+            autoCapitalize="none"
+          />
 
-      <TextInput
-        label="Apellidos"
-        returnKeyType="next"
-        value={apellidos.value}
-        onChangeText={text => setApellidos({ value: text, error: '' })}
-        error={!!apellidos.error}
-        errorText={apellidos.error}
-        autoCapitalize="none"
-      />
+          <TextInput
+            label="Apellidos"
+            returnKeyType="next"
+            value={apellidos.value}
+            onChangeText={text => setApellidos({ value: text, error: '' })}
+            error={!!apellidos.error}
+            errorText={apellidos.error}
+            autoCapitalize="none"
+          />
 
-      { showPicker && (
-        <RNDateTimePicker mode="date" value={date}
-                          display="spinner" onChange={onChange}
-                          maximumDate={new Date('2023-12-31')}
-        />
-      )}
+          {showPicker && (
+            <RNDateTimePicker mode="date" value={date}
+              display="spinner" onChange={onChange}
+              maximumDate={new Date('2023-12-31')}
+            />
+          )}
 
-      <Pressable onPress={toggleDatePicker} style={{width: '100%'}}>
-        <TextInput editable={false}
-                   label="Nacimiento"
-                   returnKeyType="next"
-                   value={nacimiento.value}
-                   onChangeText={text => setNacimiento({ value: text, error: '' })}
-                   error={!!nacimiento.error}
-                   errorText={nacimiento.error}
-                   autoCapitalize="none"
-        />
-      </Pressable>
+          <Pressable onPress={toggleDatePicker} style={{ width: '100%' }}>
+            <TextInput editable={false}
+              label="Nacimiento"
+              returnKeyType="next"
+              value={nacimiento.value}
+              onChangeText={text => setNacimiento({ value: text, error: '' })}
+              error={!!nacimiento.error}
+              errorText={nacimiento.error}
+              autoCapitalize="none"
+            />
+          </Pressable>
 
-      <TextInput
-        label="Titulo"
-        returnKeyType="next"
-        value={titulo.value}
-        onChangeText={text => setTitulo({ value: text, error: '' })}
-        error={!!titulo.error}
-        errorText={titulo.error}
-        autoCapitalize="none"
-      />
+          <TextInput
+            label="Titulo"
+            returnKeyType="next"
+            value={titulo.value}
+            onChangeText={text => setTitulo({ value: text, error: '' })}
+            error={!!titulo.error}
+            errorText={titulo.error}
+            autoCapitalize="none"
+          />
 
-      <TextInput
-        label="Email"
-        returnKeyType="next"
-        value={email.value}
-        onChangeText={text => setEmail({ value: text, error: '' })}
-        error={!!email.error}
-        errorText={email.error}
-        autoCapitalize="none"
-        autoComplete="email"
-        disabled={editarDatos}
-        textContentType="emailAddress"
-        keyboardType="email-address"
-      />
+          <TextInput
+            label="Email"
+            returnKeyType="next"
+            value={email.value}
+            onChangeText={text => setEmail({ value: text, error: '' })}
+            error={!!email.error}
+            errorText={email.error}
+            autoCapitalize="none"
+            autoComplete="email"
+            disabled={editarDatos}
+            textContentType="emailAddress"
+            keyboardType="email-address"
+          />
 
-          { !editarDatos && (
+          {!editarDatos && (
             <TextInput
               label="Contraseña"
               returnKeyType="done"
@@ -211,15 +243,21 @@ const DoctoresFormScreen = (props: any) => {
 
 
 
-      <View style={styles.container}>
-        <Button mode="contained" onPress={() => onSubmitDoctor() }>
-          { editarDatos ? 'Editar Doctor' : 'Guardar Doctor' }
-        </Button>
-      </View>
+          <View style={styles.container}>
+            <Button mode="contained" onPress={() => onSubmitDoctor()}>
+              {editarDatos ? 'Editar Doctor' : 'Guardar Doctor'}
+            </Button>
+          </View>
 
-    </Background>
+        </Background>
+        :
+        <View>
+          <Text> </Text>
+          <Text> </Text>
+          <ActivityIndicator animating={loadingData} color={MD2Colors.black} />
+        </View>
+      }
     </ScrollView>
-
   );
 }
 
