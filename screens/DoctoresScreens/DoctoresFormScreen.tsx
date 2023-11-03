@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Pressable, ScrollView } from "react-native";
+import { StyleSheet, Text, View, Pressable, ScrollView, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
 import Background from "../../src/components/Background";
 import TextInput from "../../src/components/TextInput";
@@ -9,6 +9,9 @@ import RNDateTimePicker from "@react-native-community/datetimepicker";
 import moment from 'moment';
 import DoctoresService  from "../../src/services/DoctoresService";
 import { DoctoresInterface } from "../../src/interfaces/DoctoresInterface";
+import { Navigation } from "react-native-navigation";
+import Toaster from "../../src/components/Toaster";
+import { PaperProvider } from "react-native-paper";
 
 const DoctoresFormScreen = (props: any) => {
   const editarDatos = props.id != null && props.id != undefined;
@@ -23,6 +26,17 @@ const DoctoresFormScreen = (props: any) => {
 
   const [date, setDate] = useState(new Date());
   const [showPicker, setShowPicker] = useState(false);
+
+  const [visible, setVisible] = React.useState(false);
+  const [modalText, setModalText] = React.useState('');
+  const [modalType, setModalType] = React.useState('');
+
+  const showModal = (type:string, text:string) => {
+    setModalType(type);
+    setModalText(text);
+    setVisible(true);
+  }
+  const hideModal = () => setVisible(false);
 
   useEffect(() => {
     if(editarDatos){
@@ -92,9 +106,12 @@ const DoctoresFormScreen = (props: any) => {
     DoctoresService.createDoctor(doctor)
       .then(response => {
         console.log(response);
+        navegarAtras();
       })
       .catch(error => {
-        console.log(error);
+        console.log('desde catch', error);
+        //Mostrar modal
+        showModal('danger', error.message)
       });
   }
 
@@ -102,9 +119,12 @@ const DoctoresFormScreen = (props: any) => {
     DoctoresService.updateDoctor(doctor)
       .then(response => {
         console.log(response);
+        navegarAtras();
       })
       .catch(error => {
         console.log(error);
+        //Mostrar modal
+        showModal('danger', 'Error')
       });
   }
 
@@ -124,78 +144,87 @@ const DoctoresFormScreen = (props: any) => {
     }
   }
 
+  const navegarAtras = () => {
+    console.log('atras ', props.componentId);
+    // Navigation.popTo('DoctoresList');
+    Navigation.pop(props.componentId);
+  }
+
   return (
-    <ScrollView>
+    <PaperProvider>
+      <ScrollView>
         <Background>
 
-      <View style={styles.row}>
-        <Text style={styles.label}>
-          { editarDatos ? 'Editar Doctor' : 'Nuevo Doctor' }
-        </Text>
-      </View>
+          <View style={styles.row}>
+            <TouchableOpacity onPress={() => navegarAtras() }>
+              <Text style={styles.label}>
+                { editarDatos ? 'Editar Doctor' : 'Nuevo Doctor' }
+              </Text>
+            </TouchableOpacity>
+          </View>
 
-      <TextInput
-        label="Nombres"
-        returnKeyType="next"
-        value={nombres.value}
-        onChangeText={text => setNombres({ value: text, error: '' })}
-        error={!!nombres.error}
-        errorText={nombres.error}
-        autoCapitalize="none"
-      />
+          <TextInput
+            label="Nombres"
+            returnKeyType="next"
+            value={nombres.value}
+            onChangeText={text => setNombres({ value: text, error: '' })}
+            error={!!nombres.error}
+            errorText={nombres.error}
+            autoCapitalize="none"
+          />
 
-      <TextInput
-        label="Apellidos"
-        returnKeyType="next"
-        value={apellidos.value}
-        onChangeText={text => setApellidos({ value: text, error: '' })}
-        error={!!apellidos.error}
-        errorText={apellidos.error}
-        autoCapitalize="none"
-      />
+          <TextInput
+            label="Apellidos"
+            returnKeyType="next"
+            value={apellidos.value}
+            onChangeText={text => setApellidos({ value: text, error: '' })}
+            error={!!apellidos.error}
+            errorText={apellidos.error}
+            autoCapitalize="none"
+          />
 
-      { showPicker && (
-        <RNDateTimePicker mode="date" value={date}
-                          display="spinner" onChange={onChange}
-                          maximumDate={new Date('2023-12-31')}
-        />
-      )}
+          { showPicker && (
+            <RNDateTimePicker mode="date" value={date}
+                              display="spinner" onChange={onChange}
+                              maximumDate={new Date('2023-12-31')}
+            />
+          )}
 
-      <Pressable onPress={toggleDatePicker} style={{width: '100%'}}>
-        <TextInput editable={false}
-                   label="Nacimiento"
-                   returnKeyType="next"
-                   value={nacimiento.value}
-                   onChangeText={text => setNacimiento({ value: text, error: '' })}
-                   error={!!nacimiento.error}
-                   errorText={nacimiento.error}
-                   autoCapitalize="none"
-        />
-      </Pressable>
+          <Pressable onPress={toggleDatePicker} style={{width: '100%'}}>
+            <TextInput editable={false}
+                       label="Nacimiento"
+                       returnKeyType="next"
+                       value={nacimiento.value}
+                       onChangeText={text => setNacimiento({ value: text, error: '' })}
+                       error={!!nacimiento.error}
+                       errorText={nacimiento.error}
+                       autoCapitalize="none"
+            />
+          </Pressable>
 
-      <TextInput
-        label="Titulo"
-        returnKeyType="next"
-        value={titulo.value}
-        onChangeText={text => setTitulo({ value: text, error: '' })}
-        error={!!titulo.error}
-        errorText={titulo.error}
-        autoCapitalize="none"
-      />
+          <TextInput
+            label="Titulo"
+            returnKeyType="next"
+            value={titulo.value}
+            onChangeText={text => setTitulo({ value: text, error: '' })}
+            error={!!titulo.error}
+            errorText={titulo.error}
+            autoCapitalize="none"
+          />
 
-      <TextInput
-        label="Email"
-        returnKeyType="next"
-        value={email.value}
-        onChangeText={text => setEmail({ value: text, error: '' })}
-        error={!!email.error}
-        errorText={email.error}
-        autoCapitalize="none"
-        autoComplete="email"
-        disabled={editarDatos}
-        textContentType="emailAddress"
-        keyboardType="email-address"
-      />
+          <TextInput
+            label="Email"
+            returnKeyType="next"
+            value={email.value}
+            onChangeText={text => setEmail({ value: text, error: '' })}
+            error={!!email.error}
+            errorText={email.error}
+            autoCapitalize="none"
+            autoComplete="email"
+            disabled={editarDatos}
+            textContentType="emailAddress"
+            keyboardType="email-address"
+          />
 
           { !editarDatos && (
             <TextInput
@@ -211,14 +240,23 @@ const DoctoresFormScreen = (props: any) => {
 
 
 
-      <View style={styles.container}>
-        <Button mode="contained" onPress={() => onSubmitDoctor() }>
-          { editarDatos ? 'Editar Doctor' : 'Guardar Doctor' }
-        </Button>
-      </View>
+          <View style={styles.container}>
+            <Button mode="contained" onPress={() => onSubmitDoctor() }>
+              { editarDatos ? 'Editar Doctor' : 'Guardar Doctor' }
+            </Button>
+          </View>
 
-    </Background>
-    </ScrollView>
+          <Toaster
+            visible={visible}
+            type={modalType}
+            text={modalText}
+            hideModal={hideModal}
+          />
+
+        </Background>
+      </ScrollView>
+    </PaperProvider>
+
 
   );
 }
