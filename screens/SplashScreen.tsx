@@ -15,7 +15,6 @@ const SplashScreen = () => {
     setTimeout(() => {
       Navigation.setRoot(loginRoot());
     }, 1500)
-
   }
 
   return (

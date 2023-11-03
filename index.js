@@ -46,6 +46,7 @@ Navigation.setDefaultOptions({
 });
 
 Navigation.events().registerAppLaunchedListener(async () => {
+
   Navigation.setRoot(initRoot);
 });
 

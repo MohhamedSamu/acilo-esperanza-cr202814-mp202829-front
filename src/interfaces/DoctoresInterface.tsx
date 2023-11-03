@@ -5,6 +5,7 @@ export interface DoctoresInterface {
   apellidos: string,
   nacimiento: string,
   titulo: string,
+  password?: string,
   picture?: string,
   edad?: number,
 }

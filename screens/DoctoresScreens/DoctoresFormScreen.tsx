@@ -4,7 +4,7 @@ import Background from "../../src/components/Background";
 import TextInput from "../../src/components/TextInput";
 import Button from "../../src/components/Button";
 import { theme } from "../../src/core/theme";
-import { emailValidator, nameValidator } from "../../src/core/utils";
+import { emailValidator, nameValidator, passwordValidator } from "../../src/core/utils";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 import moment from 'moment';
 import DoctoresService  from "../../src/services/DoctoresService";
@@ -49,6 +49,7 @@ const DoctoresFormScreen = (props: any) => {
     const apellidosError = nameValidator(apellidos.value);
     const tituloError = nameValidator(titulo.value);
     const nacimientoError = nameValidator(nacimiento.value);
+    const passwordError = passwordValidator(password.value);
 
     if (emailError || nombresError || apellidosError || tituloError || nacimientoError) {
       setEmail({ ...email, error: emailError });
@@ -57,6 +58,14 @@ const DoctoresFormScreen = (props: any) => {
       setTitulo({ ...titulo, error: tituloError });
       setNacimiento({ ...nacimiento, error: nacimientoError });
       return;
+    }
+
+    if( !editarDatos ){
+      console.log('entra a error?');
+      if(passwordError){
+        setPassword({ ...password, error: passwordError });
+        return;
+      }
     }
 
     const doctor: DoctoresInterface = {
@@ -74,6 +83,7 @@ const DoctoresFormScreen = (props: any) => {
       actualizarDoctor(doctor);
     } else {
       //Metodo para guardar Doctor
+      doctor.password = password.value;
       guardarDoctor(doctor);
     }
   };
@@ -182,19 +192,22 @@ const DoctoresFormScreen = (props: any) => {
         errorText={email.error}
         autoCapitalize="none"
         autoComplete="email"
+        disabled={editarDatos}
         textContentType="emailAddress"
         keyboardType="email-address"
       />
 
-          <TextInput
-            label="Contraseña"
-            returnKeyType="done"
-            value={password.value}
-            onChangeText={text => setPassword({ value: text, error: '' })}
-            error={!!password.error}
-            errorText={password.error}
-            secureTextEntry
-          />
+          { !editarDatos && (
+            <TextInput
+              label="Contraseña"
+              returnKeyType="done"
+              value={password.value}
+              onChangeText={text => setPassword({ value: text, error: '' })}
+              error={!!password.error}
+              errorText={password.error}
+              secureTextEntry
+            />
+          )}
 
 
 
