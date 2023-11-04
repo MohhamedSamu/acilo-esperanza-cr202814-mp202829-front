@@ -25,7 +25,7 @@ const CardItem = ({item, index}: any, props: any, screenName: string, callBack: 
   return (
     <View style={styles.container} key={index}>
       <Image
-        source={{ uri: 'https://picsum.photos/id/'+ index +'/800' }}
+        source={{ uri: item.picture !== '' ? item.picture : 'https://picsum.photos/id/'+ index +'/800' }}
         style={styles.image}
       />
       <TouchableOpacity onPress={() => navegarSettings(item.id) }>
