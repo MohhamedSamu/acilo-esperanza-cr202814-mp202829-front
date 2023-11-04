@@ -9,15 +9,19 @@ import ChangePwdScreen from "./screens/ChangePwdScreen";
 import SplashScreen from "./screens/SplashScreen";
 import DoctoresListScreen from "./screens/DoctoresScreens/DoctoresListScreen";
 import DoctoresFormScreen from "./screens/DoctoresScreens/DoctoresFormScreen";
+import PacientesListScreen from "./screens/PacientesScreens/PacientesListScreen";
+import PacientesFormScreen from "./screens/PacientesScreens/PacientesFormScreen";
 
-Navigation.registerComponent('Splash', () => SplashScreen);
-Navigation.registerComponent('Login', () => LoginScreen);
-Navigation.registerComponent('Home', () => HomeScreen);
 Navigation.registerComponent('Settings', () => SettingsScreen);
-Navigation.registerComponent('DoctoresList', () => DoctoresListScreen);
-Navigation.registerComponent('Doctor', () => DoctoresFormScreen);
+Navigation.registerComponent('Home', () => HomeScreen);
+Navigation.registerComponent('Login', () => LoginScreen);
+Navigation.registerComponent('Splash', () => SplashScreen);
 Navigation.registerComponent('ResetPwd', () => ResetPwdScreen);
 Navigation.registerComponent('ChangePwd', () => ChangePwdScreen);
+Navigation.registerComponent('DoctoresList', () => DoctoresListScreen);
+Navigation.registerComponent('Doctor', () => DoctoresFormScreen);
+Navigation.registerComponent('PacientesList', () => PacientesListScreen);
+Navigation.registerComponent('Paciente', () => PacientesFormScreen);
 
 
 const initRoot = {

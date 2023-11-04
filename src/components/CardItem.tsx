@@ -23,9 +23,9 @@ const CardItem = ({item, index}: any, props: any, screenName: string) => {
         style={styles.image}
       />
       <TouchableOpacity onPress={() => navegarSettings(item.id) }>
-        <Text style={styles.header}>Dr. {item.nombres} {item.apellidos}</Text>
+        <Text style={styles.header}>{screenName == "Doctor" ? 'Dr. ' : '' }{item.nombres} {item.apellidos}</Text>
 
-        <Text style={styles.body}>{item.titulo}</Text>
+        <Text style={styles.body}>{ screenName != "Doctor" ? (item.capacitado ? 'Capacitado' : 'Requiere atención') : item.titulo }</Text>
       </TouchableOpacity>
     </View>
   );
