@@ -43,7 +43,12 @@ const DoctoresFormScreen = (props: any) =>
     setModalText(text);
     setVisible(true);
   }
-  const hideModal = () => setVisible(false);
+  const hideModal = () => {
+    setVisible(false);
+    if(modalType === 'success'){
+      navegarAtras();
+    }
+  };
 
   useEffect(() =>
   {
@@ -131,7 +136,7 @@ const DoctoresFormScreen = (props: any) =>
       .then(response =>
       {
         console.log(response);
-        navegarAtras();
+        showModal('success', 'Doctor creado!')
       })
       .catch(error =>
       {
@@ -147,7 +152,7 @@ const DoctoresFormScreen = (props: any) =>
       .then(response =>
       {
         console.log(response);
-        navegarAtras();
+        showModal('success', 'Doctor actualizado!')
       })
       .catch(error =>
       {
