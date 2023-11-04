@@ -162,7 +162,8 @@ PacientesListScreen.options = {
     }
   },
   bottomTab: {
-    text: 'Pacientes'
+    text: 'Pacientes',
+    icon: require('../../src/assets/icono_paciente.png'),
   }
 }
 

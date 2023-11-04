@@ -139,7 +139,8 @@ SettingsScreen.options = {
     }
   },
   bottomTab: {
-    text: 'Settings'
+    text: 'Settings',
+    icon: require('../src/assets/icono_config.png')
   }
 }
 

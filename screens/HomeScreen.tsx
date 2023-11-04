@@ -1,7 +1,6 @@
 import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Navigation } from "react-native-navigation";
-import { loginRoot } from "../src/core/roots";
-import { Text, Button } from 'react-native-paper';
+import { Text } from 'react-native-paper';
 import DoctoresService from "../src/services/DoctoresService";
 import PacientesService from "../src/services/PacientesService";
 import React, { useState, useEffect } from "react";
@@ -14,6 +13,10 @@ import Carousel from 'react-native-snap-carousel';
 import CardItem from "../src/components/CardItem";
 import { theme } from "../src/core/theme";
 
+import '../config/firebase';
+import { getAuth } from 'firebase/auth';
+const auth = getAuth();
+
 const HomeScreen = (props: any) =>
 {
   const [datos, setDatos] = useState<DoctoresInterface[]>([]);
@@ -21,15 +24,26 @@ const HomeScreen = (props: any) =>
   const [loadingData, setLoadingData] = useState(true);
   const [loadingPacientesData, setLoadingPacientesData] = useState(true);
 
+  const [userType, setUserType] = useState('');
+
   useEffect(() =>
   {
+    if (auth.currentUser?.displayName == undefined)
+    {
+      setUserType('admin')
+    } else
+    {
+      setUserType(auth.currentUser?.displayName)
+    }
+
     listarDoctores();
     listarPacientes();
     setLoadingData(true);
     setLoadingPacientesData(true);
   }, []);
 
-  const callBackHome = () => {
+  const callBackHome = () =>
+  {
     listarDoctores();
     listarPacientes();
     setLoadingData(true);
@@ -74,69 +88,96 @@ const HomeScreen = (props: any) =>
   }
 
   return (
-    <ScrollView>
-      {!loadingData ?
-        <View style={styles.root} >
+    <ScrollView style={styles.root}>
 
-          <View style={styles.row}>
-            <Text style={styles.label}>Lista de Doctores</Text>
-
-            <Text style={styles.label}> </Text>
-            <TouchableOpacity onPress={() => navegarList('DoctoresList')}>
-              <Text style={styles.link}>Ver Todos</Text>
-            </TouchableOpacity>
-          </View>
-
-          <Carousel
-            style={{ flex: 1 }}
-            loop={true}
-            layout={'default'}
-            data={datos}
-            renderItem={(item) => CardItem(item, props, 'Doctor', () => { callBackHome() } )}
-            sliderWidth={440}
-            itemWidth={180}
-            useScrollView={true}
-          />
-        </View>
-        :
+      {(userType == 'admin' || userType == 'paciente') ?
         <View>
+          {/* Lista de Doctores */}
+          {!loadingData ?
+            <View>
+
+              <View style={styles.row}>
+                <Text style={styles.label}> Lista de Doctores </Text>
+
+                <Text style={styles.label}> </Text>
+                <TouchableOpacity onPress={() => navegarList('DoctoresList')}>
+                  <Text style={styles.link}>Ver Todos</Text>
+                </TouchableOpacity>
+              </View>
+
+              <Carousel
+                style={{ flex: 1 }}
+                loop={true}
+                layout={'default'}
+                data={datos}
+                renderItem={(item) => CardItem(item, props, 'Doctor', () => { callBackHome() })}
+                sliderWidth={440}
+                itemWidth={180}
+                useScrollView={true}
+              />
+            </View>
+            :
+            <View>
+              <Text> </Text>
+              <Text> </Text>
+              <ActivityIndicator animating={loadingData} color={MD2Colors.black} />
+            </View>
+          }
           <Text> </Text>
-          <Text> </Text>
-          <ActivityIndicator animating={loadingData} color={MD2Colors.black} />
         </View>
-      }
+        : ''}
 
-      <Text> </Text>
-
-      {!loadingPacientesData ?
-        <View style={styles.root} >
-          <View style={styles.row}>
-            <Text style={styles.label}>Pacientes recientes</Text>
-
-            <Text style={styles.label}> </Text>
-            <TouchableOpacity onPress={() => navegarList('PacientesList')}>
-              <Text style={styles.link}>Ver Todos</Text>
-            </TouchableOpacity>
-          </View>
-
-          <Carousel
-            style={{ flex: 1 }}
-            loop={true}
-            layout={'default'}
-            data={datosPaciente}
-            renderItem={(item) => CardItem(item, props, 'Paciente', () => { callBackHome() } )}
-            sliderWidth={440}
-            itemWidth={180}
-            useScrollView={true}
-          />
-        </View>
-        :
+      {(userType == 'admin' || userType == 'doctor') ?
         <View>
+          {/* Lista de Pacientes */}
+          {!loadingPacientesData ?
+            <View>
+              <View style={styles.row}>
+                <Text style={styles.label}> Lista de Pacientes</Text>
+
+                <Text style={styles.label}> </Text>
+                <TouchableOpacity onPress={() => navegarList('PacientesList')}>
+                  <Text style={styles.link}>Ver Todos</Text>
+                </TouchableOpacity>
+              </View>
+
+              <Carousel
+                style={{ flex: 1 }}
+                loop={true}
+                layout={'default'}
+                data={datosPaciente}
+                renderItem={(item) => CardItem(item, props, 'Paciente', () => { callBackHome() })}
+                sliderWidth={440}
+                itemWidth={180}
+                useScrollView={true}
+              />
+            </View>
+            :
+            <View>
+              <Text> </Text>
+              <Text> </Text>
+              <ActivityIndicator animating={loadingPacientesData} color={MD2Colors.black} />
+            </View>
+          }
           <Text> </Text>
-          <Text> </Text>
-          <ActivityIndicator animating={loadingPacientesData} color={MD2Colors.black} />
         </View>
-      }
+        : ''}
+
+      {(userType == 'doctor' || userType == 'paciente') ?
+        <View>
+          {/* Lista de Citas */}
+          <View>
+            <View style={styles.row}>
+              <Text style={styles.label}>Lista de Citas</Text>
+
+              <Text style={styles.label}> </Text>
+              <TouchableOpacity>
+                <Text style={styles.link}>Ver Todos</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+        : ''}
 
     </ScrollView>
   );
@@ -149,15 +190,16 @@ HomeScreen.options = {
     }
   },
   bottomTab: {
-    text: 'Home'
+    text: 'Home',
+    icon: require('../src/assets/icono_home.png')
   },
 };
 
 
 const styles = StyleSheet.create({
   root: {
-    // alignItems: 'center',
-    // justifyContent: 'center',
+    height: '100%',
+    width: '100%',
     backgroundColor: 'whitesmoke',
     padding: 10
   },

@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react';
+import React, { memo, useState, useEffect } from 'react';
 import { TouchableOpacity, StyleSheet, Text, View } from 'react-native';
 import Background from '../src/components/Background';
 import Logo from '../src/components/Logo';
@@ -6,7 +6,7 @@ import Header from '../src/components/Header';
 import Button from '../src/components/Button';
 import TextInput from '../src/components/TextInput';
 import Toaster from '../src/components/Toaster';
-import { mainRoot, User, resetPwdRoot } from '../src/core/roots';
+import { pacienteRoot, adminRoot, doctorRoot, User, resetPwdRoot } from '../src/core/roots';
 
 import { theme } from '../src/core/theme';
 import { emailValidator, passwordValidator } from '../src/core/utils';
@@ -31,6 +31,59 @@ const LoginScreen = (props: any) =>
   const [visible, setVisible] = useState(false);
   const [modalText, setModalText] = useState('');
   const [modalType, setModalType] = useState('');
+
+  useEffect(() =>
+  {
+    if (auth.currentUser != null)
+    {
+      const currentUserEmail: string = auth.currentUser.email == null ? '' : auth.currentUser.email
+      if (auth.currentUser.displayName == undefined)
+      {
+        //es admin
+        const user: User = {
+          name: 'Admin',
+          email: currentUserEmail,
+          typeUser: 'admin'
+        }
+        Navigation.setRoot(adminRoot(user));
+      } else if (auth.currentUser.displayName == "doctor")
+      {
+        DoctoresService.getDoctorByEmail(currentUserEmail).then((data) =>
+        {
+          const doctor: any = data.data.return[0]
+
+          const user: User = {
+            name: `${doctor?.nombres} ${doctor?.apellidos}`,
+            email: currentUserEmail,
+            typeUser: 'doctor'
+          }
+          Navigation.setRoot(doctorRoot(user));
+        }).catch(error =>
+        {
+          console.log(error);
+          return "error"
+        });
+      } else if (auth.currentUser.displayName == "paciente")
+      {
+        PacientesService.getPacienteByEmail(currentUserEmail).then((data) =>
+        {
+          const paciente: any = data.data.return[0]
+
+          const user: User = {
+            name: `${paciente?.nombres} ${paciente?.apellidos}`,
+            email: currentUserEmail,
+            typeUser: 'paciente'
+          }
+          Navigation.setRoot(pacienteRoot(user));
+        }).catch(error =>
+        {
+          console.log(error);
+          return "error"
+        });
+      }
+    }
+  }, []);
+
 
   const showModal = (type: string, text: string) =>
   {
@@ -63,9 +116,10 @@ const LoginScreen = (props: any) =>
         //es admin
         const user: User = {
           name: 'Admin',
-          email: email.value
+          email: email.value,
+          typeUser: 'admin'
         }
-        Navigation.setRoot(mainRoot(user));
+        Navigation.setRoot(adminRoot(user));
       } else if (userCreds.user.displayName == "doctor")
       {
         DoctoresService.getDoctorByEmail(email.value).then((data) =>
@@ -74,9 +128,10 @@ const LoginScreen = (props: any) =>
 
           const user: User = {
             name: `${doctor?.nombres} ${doctor?.apellidos}`,
-            email: email.value
+            email: email.value,
+            typeUser: 'doctor'
           }
-          Navigation.setRoot(mainRoot(user));
+          Navigation.setRoot(doctorRoot(user));
         }).catch(error =>
         {
           console.log(error);
@@ -90,9 +145,10 @@ const LoginScreen = (props: any) =>
 
           const user: User = {
             name: `${paciente?.nombres} ${paciente?.apellidos}`,
-            email: email.value
+            email: email.value,
+            typeUser: 'paciente'
           }
-          Navigation.setRoot(mainRoot(user));
+          Navigation.setRoot(pacienteRoot(user));
         }).catch(error =>
         {
           console.log(error);
@@ -178,8 +234,6 @@ const LoginScreen = (props: any) =>
 
       </Background>
     </PaperProvider>
-
-
   );
 };
 
@@ -201,6 +255,5 @@ const styles = StyleSheet.create({
     color: theme.colors.primary,
   },
 });
-
 
 export default LoginScreen;
