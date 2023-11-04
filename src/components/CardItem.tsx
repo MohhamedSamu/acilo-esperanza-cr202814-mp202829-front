@@ -3,17 +3,23 @@ import React from "react";
 import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Navigation } from "react-native-navigation";
 
-const CardItem = ({item, index}: any, props: any, screenName: string) => {
+const CardItem = ({item, index}: any, props: any, screenName: string, callBack: any) => {
 
   const navegarSettings = (id?: string) => {
     Navigation.push(props.componentId, {
       component: {
         name: screenName,
         passProps: {
-          id: id
+          id: id,
+          callBackItem: callBackItem,
+          from: 'item'
         }
       }
     })
+  }
+
+  const callBackItem = () => {
+    callBack();
   }
 
   return (

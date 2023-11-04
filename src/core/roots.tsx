@@ -75,4 +75,5 @@ export const resetPwdRoot = () => {
 export interface User {
   name: string;
   email: string;
+  typeUser?: string;
 }

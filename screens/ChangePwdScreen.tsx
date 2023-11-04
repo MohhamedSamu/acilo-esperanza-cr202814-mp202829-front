@@ -1,16 +1,13 @@
-import React, { memo, useState } from 'react';
-import { TouchableOpacity, StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 import Background from '../src/components/Background';
-import Logo from '../src/components/Logo';
-import Header from '../src/components/Header';
 import Button from '../src/components/Button';
 import TextInput from '../src/components/TextInput';
 import Toaster from '../src/components/Toaster';
-import { loginRoot, User } from '../src/core/roots';
+import { loginRoot } from '../src/core/roots';
 
 import { theme } from '../src/core/theme';
 import { passwordValidator } from '../src/core/utils';
-import { NavigationP } from '../src/types';
 import { Navigation } from "react-native-navigation";
 import { PaperProvider } from 'react-native-paper';
 
@@ -20,7 +17,7 @@ import { getAuth, updatePassword } from 'firebase/auth';
 
 const auth = getAuth();
 
-const ChangePwdScreen = () =>
+const ChangePwdScreen = (props: any) =>
 {
   const [password, setPassword] = useState({ value: '', error: '' });
   const [isLoading, setIsLoading] = useState(false);
@@ -35,7 +32,12 @@ const ChangePwdScreen = () =>
     setModalText(text);
     setVisible(true);
   }
-  const hideModal = () => setVisible(false);
+  const hideModal = () => {
+    setVisible(false);
+    if(modalType === 'success'){
+      Navigation.pop(props.componentId);
+    }
+  };
 
   const _onChangePressed = async () =>
   {
@@ -49,9 +51,11 @@ const ChangePwdScreen = () =>
 
     setIsLoading(true);
 
+    // @ts-ignore
     updatePassword(auth.currentUser, password.value).then(() => {
       setIsLoading(false);
       showModal('success', 'Contraseña cambiada!')
+
     }).catch((error) => {
       showModal('danger', error.message)
         console.log("error", error)
