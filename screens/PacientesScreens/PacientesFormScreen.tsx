@@ -43,7 +43,12 @@ const PacientesFormScreen = (props: any) =>
     setModalText(text);
     setVisible(true);
   }
-  const hideModal = () => setVisible(false);
+  const hideModal = () => {
+    setVisible(false);
+    if(modalType === 'success'){
+      navegarAtras();
+    }
+  };
 
   useEffect(() =>
   {
@@ -129,7 +134,7 @@ const PacientesFormScreen = (props: any) =>
       .then(response =>
       {
         console.log(response);
-        navegarAtras();
+        showModal('success', 'Paciente creado!')
       })
       .catch(error =>
       {
@@ -145,7 +150,7 @@ const PacientesFormScreen = (props: any) =>
       .then(response =>
       {
         console.log(response);
-        navegarAtras();
+        showModal('success', 'Paciente actualizado!')
       })
       .catch(error =>
       {
@@ -177,7 +182,12 @@ const PacientesFormScreen = (props: any) =>
 
   const navegarAtras = () =>
   {
-    console.log('atras ', props.componentId);
+    if(props.from == 'list'){
+      props.callBack();
+    }else{
+      props.callBackItem();
+    }
+
     Navigation.pop(props.componentId);
   }
 

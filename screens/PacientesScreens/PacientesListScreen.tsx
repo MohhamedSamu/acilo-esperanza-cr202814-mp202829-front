@@ -28,6 +28,11 @@ const PacientesListScreen = (props: any) =>
     setLoadingData(true);
   }, []);
 
+  const callback = () => {
+    props.callBackHome();
+    listarPacientes();
+  }
+
   const listarPacientes = () =>
   {
     PacientesService.getPacientes().then((response: PacientesInterface[]) =>
@@ -60,7 +65,9 @@ const PacientesListScreen = (props: any) =>
       component: {
         name: 'Paciente',
         passProps: {
-          id: id
+          id: id,
+          callBack: callback,
+          from: 'list'
         }
       }
     })
