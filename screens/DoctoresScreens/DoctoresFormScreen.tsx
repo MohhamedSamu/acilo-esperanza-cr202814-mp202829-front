@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Pressable, ScrollView } from "react-native";
+import { StyleSheet, Text, View, Pressable, ScrollView, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
 import Background from "../../src/components/Background";
 import TextInput from "../../src/components/TextInput";
@@ -9,6 +9,9 @@ import RNDateTimePicker from "@react-native-community/datetimepicker";
 import moment from 'moment';
 import DoctoresService from "../../src/services/DoctoresService";
 import { DoctoresInterface } from "../../src/interfaces/DoctoresInterface";
+import { Navigation } from "react-native-navigation";
+import Toaster from "../../src/components/Toaster";
+import { PaperProvider } from "react-native-paper";
 
 import { ActivityIndicator, MD2Colors } from 'react-native-paper';
 
@@ -28,7 +31,19 @@ const DoctoresFormScreen = (props: any) =>
   const [date, setDate] = useState(new Date());
   const [showPicker, setShowPicker] = useState(false);
 
+  const [visible, setVisible] = React.useState(false);
+  const [modalText, setModalText] = React.useState('');
+  const [modalType, setModalType] = React.useState('');
+
   const [loadingData, setLoadingData] = useState(true);
+
+  const showModal = (type: string, text: string) =>
+  {
+    setModalType(type);
+    setModalText(text);
+    setVisible(true);
+  }
+  const hideModal = () => setVisible(false);
 
   useEffect(() =>
   {
@@ -36,7 +51,8 @@ const DoctoresFormScreen = (props: any) =>
     {
       findDoctor(props.id);
       setLoadingData(true);
-    }else{
+    } else
+    {
       setLoadingData(false);
     }
   }, []);
@@ -115,10 +131,13 @@ const DoctoresFormScreen = (props: any) =>
       .then(response =>
       {
         console.log(response);
+        navegarAtras();
       })
       .catch(error =>
       {
-        console.log(error);
+        console.log('desde catch', error);
+        //Mostrar modal
+        showModal('danger', error.message)
       });
   }
 
@@ -128,10 +147,13 @@ const DoctoresFormScreen = (props: any) =>
       .then(response =>
       {
         console.log(response);
+        navegarAtras();
       })
       .catch(error =>
       {
         console.log(error);
+        //Mostrar modal
+        showModal('danger', 'Error')
       });
   }
 
@@ -155,107 +177,127 @@ const DoctoresFormScreen = (props: any) =>
     }
   }
 
+  const navegarAtras = () =>
+  {
+    console.log('atras ', props.componentId);
+    // Navigation.popTo('DoctoresList');
+    Navigation.pop(props.componentId);
+  }
+
   return (
-    <ScrollView>
-      {!loadingData ?
-        <Background>
+    <PaperProvider>
+      <ScrollView>
+        {!loadingData ?
+          <Background>
 
-          <View style={styles.row}>
-            <Text style={styles.label}>
-              {editarDatos ? 'Editar Doctor' : 'Nuevo Doctor'}
-            </Text>
-          </View>
+            <View style={styles.row}>
+              <TouchableOpacity onPress={() => navegarAtras()}>
+                <Text style={styles.label}>
+                  {editarDatos ? 'Editar Doctor' : 'Nuevo Doctor'}
+                </Text>
+              </TouchableOpacity>
+            </View>
 
-          <TextInput
-            label="Nombres"
-            returnKeyType="next"
-            value={nombres.value}
-            onChangeText={text => setNombres({ value: text, error: '' })}
-            error={!!nombres.error}
-            errorText={nombres.error}
-            autoCapitalize="none"
-          />
-
-          <TextInput
-            label="Apellidos"
-            returnKeyType="next"
-            value={apellidos.value}
-            onChangeText={text => setApellidos({ value: text, error: '' })}
-            error={!!apellidos.error}
-            errorText={apellidos.error}
-            autoCapitalize="none"
-          />
-
-          {showPicker && (
-            <RNDateTimePicker mode="date" value={date}
-              display="spinner" onChange={onChange}
-              maximumDate={new Date('2023-12-31')}
-            />
-          )}
-
-          <Pressable onPress={toggleDatePicker} style={{ width: '100%' }}>
-            <TextInput editable={false}
-              label="Nacimiento"
+            <TextInput
+              label="Nombres"
               returnKeyType="next"
-              value={nacimiento.value}
-              onChangeText={text => setNacimiento({ value: text, error: '' })}
-              error={!!nacimiento.error}
-              errorText={nacimiento.error}
+              value={nombres.value}
+              onChangeText={text => setNombres({ value: text, error: '' })}
+              error={!!nombres.error}
+              errorText={nombres.error}
               autoCapitalize="none"
             />
-          </Pressable>
 
-          <TextInput
-            label="Titulo"
-            returnKeyType="next"
-            value={titulo.value}
-            onChangeText={text => setTitulo({ value: text, error: '' })}
-            error={!!titulo.error}
-            errorText={titulo.error}
-            autoCapitalize="none"
-          />
-
-          <TextInput
-            label="Email"
-            returnKeyType="next"
-            value={email.value}
-            onChangeText={text => setEmail({ value: text, error: '' })}
-            error={!!email.error}
-            errorText={email.error}
-            autoCapitalize="none"
-            autoComplete="email"
-            disabled={editarDatos}
-            textContentType="emailAddress"
-            keyboardType="email-address"
-          />
-
-          {!editarDatos && (
             <TextInput
-              label="Contraseña"
-              returnKeyType="done"
-              value={password.value}
-              onChangeText={text => setPassword({ value: text, error: '' })}
-              error={!!password.error}
-              errorText={password.error}
-              secureTextEntry
+              label="Apellidos"
+              returnKeyType="next"
+              value={apellidos.value}
+              onChangeText={text => setApellidos({ value: text, error: '' })}
+              error={!!apellidos.error}
+              errorText={apellidos.error}
+              autoCapitalize="none"
             />
-          )}
 
-          <View style={styles.container}>
-            <Button mode="contained" onPress={() => onSubmitDoctor()}>
-              {editarDatos ? 'Editar Doctor' : 'Guardar Doctor'}
-            </Button>
+            {showPicker && (
+              <RNDateTimePicker mode="date" value={date}
+                display="spinner" onChange={onChange}
+                maximumDate={new Date('2023-12-31')}
+              />
+            )}
+
+            <Pressable onPress={toggleDatePicker} style={{ width: '100%' }}>
+              <TextInput editable={false}
+                label="Nacimiento"
+                returnKeyType="next"
+                value={nacimiento.value}
+                onChangeText={text => setNacimiento({ value: text, error: '' })}
+                error={!!nacimiento.error}
+                errorText={nacimiento.error}
+                autoCapitalize="none"
+              />
+            </Pressable>
+
+            <TextInput
+              label="Titulo"
+              returnKeyType="next"
+              value={titulo.value}
+              onChangeText={text => setTitulo({ value: text, error: '' })}
+              error={!!titulo.error}
+              errorText={titulo.error}
+              autoCapitalize="none"
+            />
+
+            <TextInput
+              label="Email"
+              returnKeyType="next"
+              value={email.value}
+              onChangeText={text => setEmail({ value: text, error: '' })}
+              error={!!email.error}
+              errorText={email.error}
+              autoCapitalize="none"
+              autoComplete="email"
+              disabled={editarDatos}
+              textContentType="emailAddress"
+              keyboardType="email-address"
+            />
+
+            {!editarDatos && (
+              <TextInput
+                label="Contraseña"
+                returnKeyType="done"
+                value={password.value}
+                onChangeText={text => setPassword({ value: text, error: '' })}
+                error={!!password.error}
+                errorText={password.error}
+                secureTextEntry
+              />
+            )}
+
+            <View style={styles.container}>
+              <Button mode="contained" onPress={() => onSubmitDoctor()}>
+                {editarDatos ? 'Editar Doctor' : 'Guardar Doctor'}
+              </Button>
+            </View>
+
+            <Toaster
+              visible={visible}
+              type={modalType}
+              text={modalText}
+              hideModal={hideModal}
+            />
+
+          </Background>
+          :
+          <View>
+            <Text> </Text>
+            <Text> </Text>
+            <ActivityIndicator animating={loadingData} color={MD2Colors.black} />
           </View>
+        }
+      </ScrollView>
+    </PaperProvider>
 
-        </Background>
-        :
-        <View>
-          <Text> </Text>
-          <Text> </Text>
-          <ActivityIndicator animating={loadingData} color={MD2Colors.black} />
-        </View>
-      }
-    </ScrollView>
+
   );
 }
 
