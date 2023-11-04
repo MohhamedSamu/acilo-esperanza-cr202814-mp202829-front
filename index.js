@@ -12,6 +12,8 @@ import DoctoresFormScreen from "./screens/DoctoresScreens/DoctoresFormScreen";
 import PacientesListScreen from "./screens/PacientesScreens/PacientesListScreen";
 import PacientesFormScreen from "./screens/PacientesScreens/PacientesFormScreen";
 
+import CitasListScreen from "./screens/CitasListScreen";
+
 Navigation.registerComponent('Settings', () => SettingsScreen);
 Navigation.registerComponent('Home', () => HomeScreen);
 Navigation.registerComponent('Login', () => LoginScreen);
@@ -22,6 +24,7 @@ Navigation.registerComponent('DoctoresList', () => DoctoresListScreen);
 Navigation.registerComponent('Doctor', () => DoctoresFormScreen);
 Navigation.registerComponent('PacientesList', () => PacientesListScreen);
 Navigation.registerComponent('Paciente', () => PacientesFormScreen);
+Navigation.registerComponent('CitasList', () => CitasListScreen);
 
 
 const initRoot = {
