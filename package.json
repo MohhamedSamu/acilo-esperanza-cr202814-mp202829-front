@@ -10,13 +10,13 @@
     "test": "jest"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^1.19.3",
     "@react-native-community/datetimepicker": "^7.6.1",
     "@types/react-native-snap-carousel": "^3.8.7",
     "axios": "^1.6.0",
+    "firebase": "^10.5.2",
     "galio-framework": "^0.8.0",
     "moment": "^2.29.4",
-    "@react-native-async-storage/async-storage": "^1.19.3",
-    "firebase": "^10.5.2",
     "react": "18.2.0",
     "react-native": "0.72.6",
     "react-native-navigation": "^7.37.1",
