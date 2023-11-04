@@ -241,8 +241,6 @@ const DoctoresFormScreen = (props: any) =>
             />
           )}
 
-
-
           <View style={styles.container}>
             <Button mode="contained" onPress={() => onSubmitDoctor()}>
               {editarDatos ? 'Editar Doctor' : 'Guardar Doctor'}

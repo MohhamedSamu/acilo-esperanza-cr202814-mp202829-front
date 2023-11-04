@@ -49,9 +49,6 @@ const HomeScreen = (props: any) =>
 
   return (
     <ScrollView>
-
-
-
       {!loadingData ?
         <View style={styles.root} >
 
