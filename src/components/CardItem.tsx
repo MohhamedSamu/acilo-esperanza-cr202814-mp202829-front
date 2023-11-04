@@ -3,35 +3,56 @@ import React from "react";
 import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Navigation } from "react-native-navigation";
 
-const CardItem = ({item, index}: any, props: any, screenName: string, callBack: any) => {
+import '../../config/firebase';
+import { getAuth } from 'firebase/auth';
+const auth = getAuth();
 
-  const navegarSettings = (id?: string) => {
-    Navigation.push(props.componentId, {
-      component: {
-        name: screenName,
-        passProps: {
-          id: id,
-          callBackItem: callBackItem,
-          from: 'item'
+const CardItem = ({ item, index }: any, props: any, screenName: string, callBack: any) =>
+{
+  const navegarSettings = (id?: string) =>
+  {
+    if (auth.currentUser?.displayName != 'paciente'){
+      Navigation.push(props.componentId, {
+        component: {
+          name: screenName,
+          passProps: {
+            id: id,
+            callBackItem: callBackItem,
+            from: 'item'
+          }
         }
+      })
+    } else {
+      if (screenName != 'Doctor'){
+        Navigation.push(props.componentId, {
+          component: {
+            name: screenName,
+            passProps: {
+              id: id,
+              callBackItem: callBackItem,
+              from: 'item'
+            }
+          }
+        })
       }
-    })
+    }
   }
 
-  const callBackItem = () => {
+  const callBackItem = () =>
+  {
     callBack();
   }
 
   return (
     <View style={styles.container} key={index}>
-      <Image
-        source={{ uri: item.picture !== '' ? item.picture : 'https://picsum.photos/id/'+ index +'/800' }}
-        style={styles.image}
-      />
-      <TouchableOpacity onPress={() => navegarSettings(item.id) }>
-        <Text style={styles.header}>{screenName == "Doctor" ? 'Dr. ' : '' }{item.nombres} {item.apellidos}</Text>
+      <TouchableOpacity onPress={() => navegarSettings(item.id)}>
+        <Image
+          source={{ uri: item.picture !== '' ? item.picture : 'https://picsum.photos/id/'+ index +'/800' }}
+          style={styles.image}
+        />
+        <Text style={styles.header}>{screenName == "Doctor" ? 'Dr. ' : ''}{item.nombres} {item.apellidos}</Text>
 
-        <Text style={styles.body}>{ screenName != "Doctor" ? (item.capacitado ? 'Capacitado' : 'Requiere atención') : item.titulo }</Text>
+        <Text style={styles.body}>{screenName != "Doctor" ? (item.capacitado ? 'Capacitado' : 'Requiere atención') : item.titulo}</Text>
       </TouchableOpacity>
     </View>
   );

@@ -16,19 +16,28 @@ import moment from 'moment';
 
 import { ActivityIndicator, MD2Colors } from 'react-native-paper';
 
+import '../../config/firebase';
+import { getAuth } from 'firebase/auth';
+const auth = getAuth();
+
 const DoctoresListScreen = (props: any) =>
 {
 
   const [datos, setDatos] = useState<DoctoresInterface[]>([]);
   const [loadingData, setLoadingData] = useState(true);
 
+  const [userType, setUserType] = useState('');
+
   useEffect(() =>
   {
+    setUserType(auth.currentUser?.displayName == null ? '' : auth.currentUser?.displayName)
+
     listarDoctores();
     setLoadingData(true);
   }, []);
 
-  const callback = () => {
+  const callback = () =>
+  {
     props.callBackHome();
     listarDoctores();
   }
@@ -61,27 +70,34 @@ const DoctoresListScreen = (props: any) =>
 
   const navegarNuevo = (id?: string) =>
   {
-    Navigation.push(props.componentId, {
-      component: {
-        name: 'Doctor',
-        passProps: {
-          id: id,
-          callBack: callback,
-          from: 'list'
+    if (userType != 'paciente'){
+      Navigation.push(props.componentId, {
+        component: {
+          name: 'Doctor',
+          passProps: {
+            id: id,
+            callBack: callback,
+            from: 'list'
+          }
         }
-      }
-    })
+      })
+    }
   }
 
   return (
     <Block safe flex style={{ backgroundColor: 'white' }}>
       {!loadingData ?
         <View>
-          <View style={styles.container}>
-            <Button mode="contained" onPress={() => navegarNuevo()}>
-              Nuevo Doctor
-            </Button>
-          </View>
+
+          {(userType != 'paciente') ?
+
+            <View style={styles.container}>
+              <Button mode="contained" onPress={() => navegarNuevo()}>
+                Nuevo Doctor
+              </Button>
+            </View>
+
+            : <Text> </Text> }
 
           <View style={styles.row}>
             <Text style={styles.label}>Lista de Doctores</Text>
@@ -162,7 +178,8 @@ DoctoresListScreen.options = {
     }
   },
   bottomTab: {
-    text: 'Doctores'
+    text: 'Doctores',
+    icon: require('../../src/assets/icono_doctor.png'),
   }
 }
 
