@@ -176,7 +176,7 @@ const DoctoresFormScreen = (props: any) =>
     setShowPicker(!showPicker);
   }
 
-  function launchImagePicker() {
+  const launchImagePicker = () => {
     launchImageLibrary(options, response => {
       console.log('Response = ', response);
 
