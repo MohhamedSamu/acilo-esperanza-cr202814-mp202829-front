@@ -14,7 +14,7 @@ import { Navigation } from "react-native-navigation";
 import { PaperProvider } from 'react-native-paper';
 
 import DoctoresService from "../src/services/DoctoresService";
-import { DoctoresInterface } from "../src/interfaces/DoctoresInterface";
+import PacientesService from "../src/services/PacientesService";
 
 import '../config/firebase';
 
@@ -66,13 +66,8 @@ const LoginScreen = (props: any) =>
           email: email.value
         }
         Navigation.setRoot(mainRoot(user));
-        console.log("userCreds", JSON.stringify(userCreds))
       } else if (userCreds.user.displayName == "doctor")
       {
-        console.log("doctor", email.value)
-
-        // const doctor:any = await findDoctor(email.value);
-
         DoctoresService.getDoctorByEmail(email.value).then((data) =>
         {
           const doctor: any = data.data.return[0]
@@ -81,23 +76,28 @@ const LoginScreen = (props: any) =>
             name: `${doctor?.nombres} ${doctor?.apellidos}`,
             email: email.value
           }
-
-          console.log("user", JSON.stringify(userCreds))
           Navigation.setRoot(mainRoot(user));
         }).catch(error =>
         {
           console.log(error);
           return "error"
         });
-
       } else if (userCreds.user.displayName == "paciente")
       {
-        const user: User = {
-          name: 'Admin',
-          email: email.value
-        }
-        console.log("user", JSON.stringify(userCreds))
-        Navigation.setRoot(mainRoot(user));
+        PacientesService.getPacienteByEmail(email.value).then((data) =>
+        {
+          const paciente: any = data.data.return[0]
+
+          const user: User = {
+            name: `${paciente?.nombres} ${paciente?.apellidos}`,
+            email: email.value
+          }
+          Navigation.setRoot(mainRoot(user));
+        }).catch(error =>
+        {
+          console.log(error);
+          return "error"
+        });
       }
       setIsLoading(false);
     } catch (error: any)
