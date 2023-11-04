@@ -10,7 +10,7 @@ const auth = getAuth();
 const CardItem = ({ item, index }: any, props: any, screenName: string, callBack: any) =>
 {
   const navegarSettings = (id?: string) =>
-  { 
+  {
     if (auth.currentUser?.displayName != 'paciente'){
       Navigation.push(props.componentId, {
         component: {
@@ -47,7 +47,7 @@ const CardItem = ({ item, index }: any, props: any, screenName: string, callBack
     <View style={styles.container} key={index}>
       <TouchableOpacity onPress={() => navegarSettings(item.id)}>
         <Image
-          source={{ uri: 'https://picsum.photos/id/' + index + '/800' }}
+          source={{ uri: item.picture !== '' ? item.picture : 'https://picsum.photos/id/'+ index +'/800' }}
           style={styles.image}
         />
         <Text style={styles.header}>{screenName == "Doctor" ? 'Dr. ' : ''}{item.nombres} {item.apellidos}</Text>

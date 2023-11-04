@@ -115,7 +115,7 @@ const DoctoresListScreen = (props: any) =>
                     title={card.nombres + ' ' + card.apellidos}
                     caption={card.titulo}
                     location={card.edad + ' años'}
-                    avatar={'https://picsum.photos/id/' + id + '/800'}
+                    avatar={card.picture}
                     imageStyle={styles.rounded}
                   />
                 </TouchableOpacity>

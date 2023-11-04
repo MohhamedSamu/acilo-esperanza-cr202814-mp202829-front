@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Pressable, ScrollView, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, Pressable, ScrollView, TouchableOpacity, Image } from "react-native";
 import React, { useEffect, useState } from "react";
 import Background from "../../src/components/Background";
 import TextInput from "../../src/components/TextInput";
@@ -12,9 +12,15 @@ import { DoctoresInterface } from "../../src/interfaces/DoctoresInterface";
 import { Navigation } from "react-native-navigation";
 import Toaster from "../../src/components/Toaster";
 import { PaperProvider } from "react-native-paper";
-
+import { launchImageLibrary } from "react-native-image-picker";
 import { ActivityIndicator, MD2Colors } from 'react-native-paper';
+import { ImageLibraryOptions } from "react-native-image-picker/src/types";
 
+const options: ImageLibraryOptions = {
+  mediaType: "photo",
+  includeBase64: true,
+
+};
 
 const DoctoresFormScreen = (props: any) =>
 {
@@ -27,6 +33,8 @@ const DoctoresFormScreen = (props: any) =>
   const [titulo, setTitulo] = useState({ value: '', error: '' });
   const [picture, setPicture] = useState({ value: '', error: '' });
   const [password, setPassword] = useState({ value: '', error: '' });
+
+  const [image, setImage] = useState<string | undefined>('');
 
   const [date, setDate] = useState(new Date());
   const [showPicker, setShowPicker] = useState(false);
@@ -72,6 +80,7 @@ const DoctoresFormScreen = (props: any) =>
       setApellidos({ value: response.apellidos, error: '' });
       setNacimiento({ value: response.nacimiento, error: '' });
       setTitulo({ value: response.titulo, error: '' });
+      setImage(response.picture);
       setLoadingData(false);
     }).catch(error =>
     {
@@ -114,7 +123,7 @@ const DoctoresFormScreen = (props: any) =>
       nombres: nombres.value,
       nacimiento: nacimiento.value,
       titulo: titulo.value,
-      picture: '',
+      picture: image,
     };
 
     console.log(doctor);
@@ -166,6 +175,22 @@ const DoctoresFormScreen = (props: any) =>
   {
     setShowPicker(!showPicker);
   }
+
+  const launchImagePicker = () => {
+    launchImageLibrary(options, response => {
+      console.log('Response = ', response);
+
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.errorCode) {
+        console.log('ImagePicker Error: ', response.errorCode);
+      } else {
+        // @ts-ignore
+        setImage(`data:image/jpeg;base64,${response.assets[0].base64}`);
+      }
+    });
+  }
+
 
   const onChange = (event: any, selectedDate: any) =>
   {
@@ -282,6 +307,15 @@ const DoctoresFormScreen = (props: any) =>
               />
             )}
 
+            <View>
+              {image && <Image source={{uri: image}} style={styles.image} />}
+              {!editarDatos && (
+                <Button mode="contained" onPress={() => launchImagePicker()}>
+                  Seleccionar imagen
+                </Button>
+              )}
+            </View>
+
             <View style={styles.container}>
               <Button mode="contained" onPress={() => onSubmitDoctor()}>
                 {editarDatos ? 'Editar Doctor' : 'Guardar Doctor'}
@@ -334,6 +368,12 @@ const styles = StyleSheet.create({
     color: theme.colors.secondary,
     fontWeight: 'bold',
     fontSize: 20,
+  },
+  image: {
+    width: 150,
+    height: 150,
+    marginRight: 10,
+    marginBottom: 10,
   },
 });
 
