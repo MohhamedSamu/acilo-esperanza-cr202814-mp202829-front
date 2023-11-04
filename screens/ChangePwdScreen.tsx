@@ -49,6 +49,7 @@ const ChangePwdScreen = () =>
 
     setIsLoading(true);
 
+    // @ts-ignore
     updatePassword(auth.currentUser, password.value).then(() => {
       setIsLoading(false);
       showModal('success', 'Contraseña cambiada!')

@@ -179,8 +179,12 @@ const DoctoresFormScreen = (props: any) =>
 
   const navegarAtras = () =>
   {
-    console.log('atras ', props.componentId);
-    // Navigation.popTo('DoctoresList');
+    if(props.from == 'list'){
+      props.callBack();
+    }else{
+      props.callBackItem();
+    }
+
     Navigation.pop(props.componentId);
   }
 

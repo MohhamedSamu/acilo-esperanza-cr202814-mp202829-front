@@ -23,6 +23,10 @@ const HomeScreen = (props: any) =>
     setLoadingData(true);
   }, []);
 
+  const callBackHome = () => {
+    listarDoctores();
+  }
+
   const listarDoctores = () =>
   {
     DoctoresService.getDoctores().then((response: DoctoresInterface[]) =>
@@ -41,7 +45,8 @@ const HomeScreen = (props: any) =>
       component: {
         name: screen,
         passProps: {
-          count: 5
+          count: 5,
+          callBackHome: callBackHome
         }
       }
     })
@@ -83,7 +88,7 @@ const HomeScreen = (props: any) =>
             loop={true}
             layout={'default'}
             data={datos}
-            renderItem={(item) => CardItem(item, props, 'Doctor')}
+            renderItem={(item) => CardItem(item, props, 'Doctor', () => { callBackHome() })}
             sliderWidth={440}
             itemWidth={180}
             useScrollView={true}
@@ -105,7 +110,7 @@ const HomeScreen = (props: any) =>
             loop={true}
             layout={'default'}
             data={datos}
-            renderItem={(item) => CardItem(item, props, 'Doctor')}
+            renderItem={(item) => CardItem(item, props, 'Doctor', () => { callBackHome() })}
             sliderWidth={440}
             itemWidth={180}
             useScrollView={true}
@@ -130,7 +135,7 @@ HomeScreen.options = {
   },
   bottomTab: {
     text: 'Home'
-  }
+  },
 };
 
 
