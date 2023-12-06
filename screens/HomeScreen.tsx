@@ -171,7 +171,7 @@ const HomeScreen = (props: any) =>
               <Text style={styles.label}>Lista de Citas</Text>
 
               <Text style={styles.label}> </Text>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => navegarList('DoctoresAgendarCita')}>
                 <Text style={styles.link}>Ver Todos</Text>
               </TouchableOpacity>
             </View>
