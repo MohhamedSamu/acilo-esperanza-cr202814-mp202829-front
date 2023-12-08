@@ -11,6 +11,7 @@ import DoctoresListScreen from "./screens/DoctoresScreens/DoctoresListScreen";
 import DoctoresFormScreen from "./screens/DoctoresScreens/DoctoresFormScreen";
 import PacientesListScreen from "./screens/PacientesScreens/PacientesListScreen";
 import PacientesFormScreen from "./screens/PacientesScreens/PacientesFormScreen";
+import CitasPacientesListScreen from "./screens/PacientesScreens/CitasListScreen";
 
 import CitasListScreen from "./screens/CitasListScreen";
 import DoctoresAgendarCitaScreen from "./screens/DoctoresScreens/DoctoresAgendarCitaScreen";
@@ -25,6 +26,7 @@ Navigation.registerComponent('DoctoresList', () => DoctoresListScreen);
 Navigation.registerComponent('Doctor', () => DoctoresFormScreen);
 Navigation.registerComponent('PacientesList', () => PacientesListScreen);
 Navigation.registerComponent('Paciente', () => PacientesFormScreen);
+Navigation.registerComponent('CitasPacientesList', () => CitasPacientesListScreen);
 Navigation.registerComponent('CitasList', () => CitasListScreen);
 Navigation.registerComponent('DoctoresAgendarCita', () => DoctoresAgendarCitaScreen);
 
