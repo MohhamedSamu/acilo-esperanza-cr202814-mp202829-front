@@ -13,4 +13,14 @@ const newDoctorCita = async (cita: CitaInterface) => {
   }
 }
 
-export default { newDoctorCita }
+const newPacienteCita = async (cita: CitaInterface) => {
+  const url = baseUrl + '/newPacienteCita'
+  const response = await axios.post(url, cita);
+  if (response.status === 200) {
+    return response.data.return;
+  } else {
+    throw new Error("Fallo al crear");
+  }
+}
+
+export default { newDoctorCita, newPacienteCita }
