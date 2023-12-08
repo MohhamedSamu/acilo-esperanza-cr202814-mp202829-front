@@ -9,14 +9,14 @@ const auth = getAuth();
 
 const CardItem = ({ item, index }: any, props: any, screenName: string, callBack: any) =>
 {
-  const navegarSettings = (id?: string) =>
+  const navegarSettings = (item?: any) =>
   {
     if (auth.currentUser?.displayName != 'paciente'){
       Navigation.push(props.componentId, {
         component: {
           name: screenName,
           passProps: {
-            id: id,
+            id: item.id,
             callBackItem: callBackItem,
             from: 'item'
           }
@@ -28,9 +28,20 @@ const CardItem = ({ item, index }: any, props: any, screenName: string, callBack
           component: {
             name: screenName,
             passProps: {
-              id: id,
+              id: item.id,
               callBackItem: callBackItem,
               from: 'item'
+            }
+          }
+        })
+      } else {
+        console.log('desde paciente a doctor??');
+        Navigation.push(props.componentId, {
+          component: {
+            name: 'PacientesAgendarCita',
+            passProps: {
+              doctor: item,
+              id: item?.id
             }
           }
         })
@@ -45,7 +56,7 @@ const CardItem = ({ item, index }: any, props: any, screenName: string, callBack
 
   return (
     <View style={styles.container} key={index}>
-      <TouchableOpacity onPress={() => navegarSettings(item.id)}>
+      <TouchableOpacity onPress={() => navegarSettings(item)}>
         <Image
           source={{ uri: item.picture !== '' ? item.picture : 'https://picsum.photos/id/'+ index +'/800' }}
           style={styles.image}

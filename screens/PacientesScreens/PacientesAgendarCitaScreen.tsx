@@ -28,14 +28,16 @@ import { getAuth } from "firebase/auth";
 import CitasService from "../../src/services/CitasService";
 import Toaster from "../../src/components/Toaster";
 import { Navigation } from "react-native-navigation";
+import DoctoresAgendarCitaScreen from "../DoctoresScreens/DoctoresAgendarCitaScreen";
+import PacientesService from "../../src/services/PacientesService";
 const auth = getAuth();
 
 const BASE = 25;
 
 const HeaderHeight = (BASE * 3.5 + (StatusBar.currentHeight || 0));
-const DoctoresAgendarCitaScreen = (props: any) => {
+const PacientesAgendarCitaScreen = (props: any) => {
 
-  const [paciente, setPaciente] = useState<PacientesInterface>(props.paciente);
+  const [doctor, setDoctor] = useState<DoctoresInterface>(props.doctor);
 
   const [selected, setSelected] = useState('');
   const [date, setDate] = useState(new Date());
@@ -49,14 +51,14 @@ const DoctoresAgendarCitaScreen = (props: any) => {
   useEffect(() =>
   {
     const hoy = moment();
-    var month = paciente.nacimiento.split("/")[0];
-    var day = paciente.nacimiento.split("/")[1];
-    var year = paciente.nacimiento.split("/")[2];
+    var month = doctor.nacimiento.split("/")[0];
+    var day = doctor.nacimiento.split("/")[1];
+    var year = doctor.nacimiento.split("/")[2];
 
     const myDate = moment(`${year}-${month}-${day}`);
 
-    paciente.edad = hoy.diff(myDate, 'years');
-    console.log(paciente.edad);
+    doctor.edad = hoy.diff(myDate, 'years');
+    console.log(doctor.edad);
   }, []);
 
   const handlePress = (value: any) => {
@@ -97,9 +99,8 @@ const DoctoresAgendarCitaScreen = (props: any) => {
     }
   };
 
-  const onSaveCitaPaciente = () =>
+  const onSaveCitaDoctor = () =>
   {
-
     const fechaError = nameValidator(fechaCita.value);
     if (fechaError || selected === '')
     {
@@ -108,22 +109,22 @@ const DoctoresAgendarCitaScreen = (props: any) => {
     }
 
     // @ts-ignore
-    DoctoresService.getDoctorByEmail(auth.currentUser?.email).then((response: DoctoresInterface) =>
+    PacientesService.getPacienteByEmail(auth.currentUser?.email).then((response: PacientesInterface) =>
     {
       const cita: CitaInterface = {
-        paciente: paciente,
+        paciente: response,
         fecha: fechaCita.value,
         hora: selected,
-        doctor: response
+        doctor: doctor
       };
 
       console.log(cita);
 
-      CitasService.newDoctorCita(cita)
+      CitasService.newPacienteCita(cita)
         .then(response =>
         {
           console.log(response);
-          showModal('success', 'Cita agendada exitosamente!')
+          showModal('success', 'Cita solicitada exitosamente!')
         })
         .catch(error =>
         {
@@ -149,21 +150,22 @@ const DoctoresAgendarCitaScreen = (props: any) => {
 
   return (
     <PaperProvider>
+
       <Block flex style={styles.profile}>
         <Block flex>
           <ImageBackground
-            source={{uri: paciente && paciente.picture !== '' ? paciente.picture : 'https://picsum.photos/id/1/800'}}
+            source={{uri: doctor && doctor.picture !== '' ? doctor.picture : 'https://picsum.photos/id/1/800'}}
             style={styles.profileContainer}
             imageStyle={styles.profileImage}>
             <Block flex style={styles.profileDetails}>
               <Block style={styles.profileTexts}>
-                <Text color="white" size={28} style={{ paddingBottom: 8 }}>{paciente.nombres} {paciente.apellidos}</Text>
+                <Text color="white" size={28} style={{ paddingBottom: 8 }}>{doctor.nombres} {doctor.apellidos}</Text>
                 <Block row space="between">
                   <Block row>
                     <Block middle style={styles.pro}>
-                      <Text size={16} color="white">{(paciente.capacitado ? 'Capacitado' : 'Requiere atención')}</Text>
+                      <Text size={16} color="white">{(doctor.titulo)}</Text>
                     </Block>
-                    <Text color="white" size={16} muted style={styles.seller}>{paciente.edad} años</Text>
+                    <Text color="white" size={16} muted style={styles.seller}>{doctor.edad} años</Text>
                     {/*<Text size={16} color={materialTheme.COLORS.WARNING}>*/}
                     {/*  4.8*/}
                     {/*</Text>*/}
@@ -178,8 +180,9 @@ const DoctoresAgendarCitaScreen = (props: any) => {
             </Block>
           </ImageBackground>
         </Block>
+
         <Block flex style={styles.options}>
-          <ScrollView showsVerticalScrollIndicator={false}>
+          <ScrollView>
             {/*<Block row space="between" style={{ padding: theme.SIZES?.BASE, }}>*/}
             {/*  <Block middle>*/}
             {/*    <Text bold size={12} style={{marginBottom: 8}}>36</Text>*/}
@@ -194,7 +197,6 @@ const DoctoresAgendarCitaScreen = (props: any) => {
             {/*    <Text muted size={12}>Messages</Text>*/}
             {/*  </Block>*/}
             {/*</Block>*/}
-
 
             <Block row space="between" style={{ paddingVertical: 16, alignItems: 'baseline' }}>
               <Text size={16}>Agendar Cita</Text>
@@ -263,7 +265,7 @@ const DoctoresAgendarCitaScreen = (props: any) => {
             </Block>
 
             <View style={styles.container}>
-              <Button mode="contained" onPress={() => onSaveCitaPaciente()}>
+              <Button mode="contained" onPress={() => onSaveCitaDoctor()}>
                 Agendar Cita
               </Button>
             </View>
@@ -281,9 +283,10 @@ const DoctoresAgendarCitaScreen = (props: any) => {
     </PaperProvider>
 
   );
+
 };
 
-DoctoresAgendarCitaScreen.options = {
+PacientesAgendarCitaScreen.options = {
   topBar: {
     title: {
       text: 'Agendar Cita'
@@ -364,5 +367,4 @@ const styles = StyleSheet.create({
   },
 });
 
-
-export default DoctoresAgendarCitaScreen;
+export default PacientesAgendarCitaScreen;
