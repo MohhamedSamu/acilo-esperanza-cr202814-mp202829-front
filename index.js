@@ -15,6 +15,7 @@ import PacientesFormScreen from "./screens/PacientesScreens/PacientesFormScreen"
 import CitasListScreen from "./screens/CitasListScreen";
 import DoctoresAgendarCitaScreen from "./screens/DoctoresScreens/DoctoresAgendarCitaScreen";
 import PacientesAgendarCitaScreen from "./screens/PacientesScreens/PacientesAgendarCitaScreen";
+import ReAgendarCitaScreen from "./screens/DoctoresScreens/ReAgendarCitaScreen";
 
 Navigation.registerComponent('Settings', () => SettingsScreen);
 Navigation.registerComponent('Home', () => HomeScreen);
@@ -29,6 +30,7 @@ Navigation.registerComponent('Paciente', () => PacientesFormScreen);
 Navigation.registerComponent('CitasList', () => CitasListScreen);
 Navigation.registerComponent('DoctoresAgendarCita', () => DoctoresAgendarCitaScreen);
 Navigation.registerComponent('PacientesAgendarCita', () => PacientesAgendarCitaScreen);
+Navigation.registerComponent('ReAgendarCita', () => ReAgendarCitaScreen);
 
 
 const initRoot = {
