@@ -68,7 +68,7 @@ const ReAgendarCitaScreen = (props: any) => {
         var day = paciente.nacimiento.split("/")[1];
         var year = paciente.nacimiento.split("/")[2];
 
-        const myDate = moment(`${year}-${month}-${day}`);
+        const myDate = moment(`${year}-${month}-${day}`);``
 
         paciente.edad = hoy.diff(myDate, 'years');
         console.log(paciente.edad);
@@ -155,6 +155,54 @@ const ReAgendarCitaScreen = (props: any) => {
         showModal('danger', error.message)
       });
 
+  }
+
+  const onCompleteCita = () =>
+  {
+    CitasService.completarCita(props.id)
+      .then(response =>
+      {
+        console.log(response);
+        showModal('success', 'Se completo la cita exitosamente!')
+      })
+      .catch(error =>
+      {
+        console.log('desde catch', error);
+        //Mostrar modal
+        showModal('danger', error.message)
+      });
+  }
+
+  const onRechazarCita = () =>
+  {
+    CitasService.rechazarCita(props.id)
+      .then(response =>
+      {
+        console.log(response);
+        showModal('success', 'Se rechazo la cita exitosamente!')
+      })
+      .catch(error =>
+      {
+        console.log('desde catch', error);
+        //Mostrar modal
+        showModal('danger', error.message)
+      });
+  }
+
+  const onConfirmCita = () =>
+  {
+    CitasService.confirmCita(props.id)
+      .then(response =>
+      {
+        console.log(response);
+        showModal('success', 'Se completo la cita exitosamente!')
+      })
+      .catch(error =>
+      {
+        console.log('desde catch', error);
+        //Mostrar modal
+        showModal('danger', error.message)
+      });
   }
 
   const RadioButton = ({ label, checked, onPress }: any) => (
@@ -269,8 +317,33 @@ const ReAgendarCitaScreen = (props: any) => {
 
             <View style={styles.container}>
               <Button mode="contained" onPress={() => onUpdateCita()}>
-                Agendar Cita
+                Reagendar Cita
               </Button>
+
+              <Text> </Text>
+              {(cita?.estado == 'confirmada') ?
+                <Button buttonColor="green" mode="contained" onPress={ onCompleteCita }>
+                  Completar cita
+                </Button>
+              : ''}
+
+              {(cita?.estado == 'pendiente') ?
+                <Block row space="between">
+                  <Block middle style={{marginHorizontal:5}}>
+                    <Button buttonColor="red" mode="contained" onPress={ onRechazarCita }>
+                      Rechazar cita
+                    </Button>
+                  </Block>
+                  <Block middle style={{marginHorizontal:5}}>
+                    <Button buttonColor="blue" mode="contained" onPress={ onConfirmCita }>
+                      Confirmar cita
+                    </Button>
+                  </Block>
+                </Block>
+              : ''}
+
+
+
             </View>
 
             <Toaster

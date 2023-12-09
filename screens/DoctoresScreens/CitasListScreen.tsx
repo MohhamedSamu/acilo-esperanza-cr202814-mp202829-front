@@ -68,7 +68,7 @@ const CitasListScreen = (props: any) =>
   {
     Navigation.push(props.componentId, {
       component: {
-        name: 'Paciente',
+        name: 'ReAgendarCita',
         passProps: {
           id: id,
           callBack: callback,
@@ -147,7 +147,6 @@ const CitasListScreen = (props: any) =>
                       imageStyle={styles.rounded}
                     />
                   </TouchableOpacity>
-
                 ))}
               </Block>
             </ScrollView>
@@ -194,6 +193,11 @@ const styles = StyleSheet.create({
     padding: 20,
     width: '100%',
     maxWidth: 300,
+    alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  btnsContainer: {
     alignSelf: 'center',
     alignItems: 'center',
     justifyContent: 'center',

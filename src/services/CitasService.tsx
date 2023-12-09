@@ -71,4 +71,37 @@ const updateCita = async (cita: CitaInterface) => {
   }
 }
 
-export default { newDoctorCita, newPacienteCita, getCitasPacientes, getCitasDoctores, getCita, updateCita }
+const completarCita = async (id: string) => {
+  const urlPut = baseUrl + '/completarCita/' + id
+  console.log("urlPut", urlPut)
+  const response = await axios.post(urlPut, {});
+  if (response.status === 200) {
+    return response.data.return;
+  } else {
+    throw new Error("Fallo al actualizar");
+  }
+}
+
+const confirmCita = async (id: string) => {
+  const urlPut = baseUrl + '/confirmCita/' + id
+  console.log("urlPut", urlPut)
+  const response = await axios.post(urlPut, {});
+  if (response.status === 200) {
+    return response.data.return;
+  } else {
+    throw new Error("Fallo al actualizar");
+  }
+}
+
+const rechazarCita = async (id: string) => {
+  const urlPut = baseUrl + '/rechazarCita/' + id
+  console.log("urlPut", urlPut)
+  const response = await axios.post(urlPut, {});
+  if (response.status === 200) {
+    return response.data.return;
+  } else {
+    throw new Error("Fallo al actualizar");
+  }
+}
+
+export default { newDoctorCita, newPacienteCita, getCitasPacientes, getCitasDoctores, getCita, updateCita, completarCita, confirmCita, rechazarCita }
