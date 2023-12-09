@@ -169,9 +169,9 @@ export const pacienteRoot = (user: User) => {
             stack: {
               children: [
                 {
-                  id: 'CitasList',
+                  id: 'CitasPacientesList',
                   component: {
-                    name: 'CitasList',
+                    name: 'CitasPacientesList',
 
                   }
                 }

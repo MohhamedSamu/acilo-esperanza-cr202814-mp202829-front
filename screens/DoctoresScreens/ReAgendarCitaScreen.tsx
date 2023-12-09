@@ -10,7 +10,7 @@ import {
   View,
   Pressable
 } from "react-native";
-import { Button } from 'react-native-paper';
+import { ActivityIndicator, Button, MD2Colors } from "react-native-paper";
 import { PaperProvider } from "react-native-paper";
 
 const { width, height } = Dimensions.get('screen');
@@ -22,22 +22,19 @@ import RNDateTimePicker from "@react-native-community/datetimepicker";
 import TextInput from "../../src/components/TextInput";
 import { nameValidator } from "../../src/core/utils";
 import { CitaInterface } from "../../src/interfaces/CitaInterface";
-import DoctoresService from "../../src/services/DoctoresService";
-import { DoctoresInterface } from "../../src/interfaces/DoctoresInterface";
 import { getAuth } from "firebase/auth";
 import CitasService from "../../src/services/CitasService";
 import Toaster from "../../src/components/Toaster";
 import { Navigation } from "react-native-navigation";
-import DoctoresAgendarCitaScreen from "../DoctoresScreens/DoctoresAgendarCitaScreen";
-import PacientesService from "../../src/services/PacientesService";
+
 const auth = getAuth();
 
 const BASE = 25;
 
 const HeaderHeight = (BASE * 3.5 + (StatusBar.currentHeight || 0));
-const PacientesAgendarCitaScreen = (props: any) => {
-
-  const [doctor, setDoctor] = useState<DoctoresInterface>(props.doctor);
+const ReAgendarCitaScreen = (props: any) => {
+  const [paciente, setPaciente] = useState<PacientesInterface | undefined>();
+  const [cita, setCita] = useState<CitaInterface | null>(null);
 
   const [selected, setSelected] = useState('');
   const [date, setDate] = useState(new Date());
@@ -48,18 +45,46 @@ const PacientesAgendarCitaScreen = (props: any) => {
   const [modalText, setModalText] = React.useState('');
   const [modalType, setModalType] = React.useState('');
 
+  const [loadingData, setLoadingData] = useState(true);
+
+
   useEffect(() =>
   {
-    const hoy = moment();
-    var month = doctor.nacimiento.split("/")[0];
-    var day = doctor.nacimiento.split("/")[1];
-    var year = doctor.nacimiento.split("/")[2];
+    findCita(props.id);
 
-    const myDate = moment(`${year}-${month}-${day}`);
-
-    doctor.edad = hoy.diff(myDate, 'years');
-    console.log(doctor.edad);
   }, []);
+
+  const findCita = (id: string) =>
+  {
+    CitasService.getCita(id).then((response: CitaInterface) =>
+    {
+      console.log(response);
+      setCita(response);
+      setPaciente(response.paciente);
+
+      if(paciente){
+        const hoy = moment();
+        var month = paciente.nacimiento.split("/")[0];
+        var day = paciente.nacimiento.split("/")[1];
+        var year = paciente.nacimiento.split("/")[2];
+
+        const myDate = moment(`${year}-${month}-${day}`);
+
+        paciente.edad = hoy.diff(myDate, 'years');
+        console.log(paciente.edad);
+      }
+
+      console.log(cita);
+
+      setFechaCita({ value: response.fecha, error: '' });
+      setSelected(response.hora);
+
+      setLoadingData(false);
+    }).catch(error =>
+    {
+      console.log(error);
+    });
+  }
 
   const handlePress = (value: any) => {
     setSelected(value);
@@ -99,8 +124,9 @@ const PacientesAgendarCitaScreen = (props: any) => {
     }
   };
 
-  const onSaveCitaDoctor = () =>
+  const onUpdateCita = () =>
   {
+
     const fechaError = nameValidator(fechaCita.value);
     if (fechaError || selected === '')
     {
@@ -108,37 +134,27 @@ const PacientesAgendarCitaScreen = (props: any) => {
       return;
     }
 
-    // @ts-ignore
-    PacientesService.getPacienteByEmail(auth.currentUser?.email).then((response: any) =>
-    {
+    const cita: CitaInterface = {
+      id: props.id,
+      fecha: fechaCita.value,
+      hora: selected,
+    };
 
-      const cita: CitaInterface = {
-        paciente: response.data.return[0],
-        fecha: fechaCita.value,
-        hora: selected,
-        doctor: doctor
-      };
+    console.log(cita);
 
-      console.log(cita);
+    CitasService.updateCita(cita)
+      .then(response =>
+      {
+        console.log(response);
+        showModal('success', 'Se re agendo la cita exitosamente!')
+      })
+      .catch(error =>
+      {
+        console.log('desde catch', error);
+        //Mostrar modal
+        showModal('danger', error.message)
+      });
 
-      CitasService.newPacienteCita(cita)
-        .then(response =>
-        {
-          console.log(response);
-          showModal('success', 'Cita solicitada exitosamente!')
-        })
-        .catch(error =>
-        {
-          console.log('desde catch', error);
-          //Mostrar modal
-          showModal('danger', error.message)
-        });
-
-
-    }).catch(error =>
-    {
-      console.log(error);
-    });
   }
 
   const RadioButton = ({ label, checked, onPress }: any) => (
@@ -151,22 +167,23 @@ const PacientesAgendarCitaScreen = (props: any) => {
 
   return (
     <PaperProvider>
+      {!loadingData && paciente != undefined ?
+        <Block flex style={styles.profile}>
 
-      <Block flex style={styles.profile}>
         <Block flex>
           <ImageBackground
-            source={{uri: doctor && doctor.picture !== '' ? doctor.picture : 'https://picsum.photos/id/1/800'}}
+            source={{uri: paciente && paciente.picture !== '' ? paciente.picture : 'https://picsum.photos/id/1/800'}}
             style={styles.profileContainer}
             imageStyle={styles.profileImage}>
             <Block flex style={styles.profileDetails}>
               <Block style={styles.profileTexts}>
-                <Text color="white" size={28} style={{ paddingBottom: 8 }}>{doctor.nombres} {doctor.apellidos}</Text>
+                <Text color="white" size={28} style={{ paddingBottom: 8 }}>{paciente.nombres} {paciente.apellidos}</Text>
                 <Block row space="between">
                   <Block row>
                     <Block middle style={styles.pro}>
-                      <Text size={16} color="white">{(doctor.titulo)}</Text>
+                      <Text size={16} color="white">{(paciente.capacitado ? 'Capacitado' : 'Requiere atención')}</Text>
                     </Block>
-                    <Text color="white" size={16} muted style={styles.seller}>{doctor.edad} años</Text>
+                    <Text color="white" size={16} muted style={styles.seller}>{paciente.edad} años</Text>
                     {/*<Text size={16} color={materialTheme.COLORS.WARNING}>*/}
                     {/*  4.8*/}
                     {/*</Text>*/}
@@ -181,23 +198,8 @@ const PacientesAgendarCitaScreen = (props: any) => {
             </Block>
           </ImageBackground>
         </Block>
-
         <Block flex style={styles.options}>
-          <ScrollView>
-            {/*<Block row space="between" style={{ padding: theme.SIZES?.BASE, }}>*/}
-            {/*  <Block middle>*/}
-            {/*    <Text bold size={12} style={{marginBottom: 8}}>36</Text>*/}
-            {/*    <Text muted size={12}>Orders</Text>*/}
-            {/*  </Block>*/}
-            {/*  <Block middle>*/}
-            {/*    <Text bold size={12} style={{marginBottom: 8}}>5</Text>*/}
-            {/*    <Text muted size={12}>Bids & Offers</Text>*/}
-            {/*  </Block>*/}
-            {/*  <Block middle>*/}
-            {/*    <Text bold size={12} style={{marginBottom: 8}}>2</Text>*/}
-            {/*    <Text muted size={12}>Messages</Text>*/}
-            {/*  </Block>*/}
-            {/*</Block>*/}
+          <ScrollView showsVerticalScrollIndicator={false}>
 
             <Block row space="between" style={{ paddingVertical: 16, alignItems: 'baseline' }}>
               <Text size={16}>Agendar Cita</Text>
@@ -266,7 +268,7 @@ const PacientesAgendarCitaScreen = (props: any) => {
             </Block>
 
             <View style={styles.container}>
-              <Button mode="contained" onPress={() => onSaveCitaDoctor()}>
+              <Button mode="contained" onPress={() => onUpdateCita()}>
                 Agendar Cita
               </Button>
             </View>
@@ -281,16 +283,23 @@ const PacientesAgendarCitaScreen = (props: any) => {
           </ScrollView>
         </Block>
       </Block>
+        :
+        <View>
+          <Text> </Text>
+          <Text> </Text>
+          <ActivityIndicator animating={loadingData} color={MD2Colors.black} />
+        </View>
+      }
     </PaperProvider>
 
   );
 
 };
 
-PacientesAgendarCitaScreen.options = {
+ReAgendarCitaScreen.options = {
   topBar: {
     title: {
-      text: 'Agendar Cita'
+      text: 'Re Agendar Cita Paciente'
     }
   }
 }
@@ -368,4 +377,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PacientesAgendarCitaScreen;
+export default ReAgendarCitaScreen;

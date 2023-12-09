@@ -67,6 +67,7 @@ const LoginScreen = (props: any) =>
       {
         PacientesService.getPacienteByEmail(currentUserEmail).then((data) =>
         {
+          console.log("data.datadatadata", data.data)
           const paciente: any = data.data.return[0]
 
           const user: User = {
@@ -122,9 +123,9 @@ const LoginScreen = (props: any) =>
         Navigation.setRoot(adminRoot(user));
       } else if (userCreds.user.displayName == "doctor")
       {
-        DoctoresService.getDoctorByEmail(email.value).then((data) =>
+        DoctoresService.getDoctorByEmail(email.value).then((returnData) =>
         {
-          const doctor: any = data.data.return[0]
+          const doctor: any = returnData
 
           const user: User = {
             name: `${doctor?.nombres} ${doctor?.apellidos}`,
