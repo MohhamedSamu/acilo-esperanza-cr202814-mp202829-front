@@ -163,7 +163,8 @@ const HomeScreen = (props: any) =>
         </View>
         : ''}
 
-      {(userType == 'doctor' || userType == 'paciente') ?
+          
+      {(userType == 'paciente') ?
         <View>
           {/* Lista de Citas */}
           <View>
@@ -171,7 +172,23 @@ const HomeScreen = (props: any) =>
               <Text style={styles.label}>Lista de Citas</Text>
 
               <Text style={styles.label}> </Text>
-              <TouchableOpacity onPress={() => navegarList('DoctoresAgendarCita')}>
+              <TouchableOpacity onPress={() => navegarList('CitasPacientesList')}>
+                <Text style={styles.link}>Ver Todos</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+        : ''}
+
+        {(userType == 'doctor') ?
+        <View>
+          {/* Lista de Citas */}
+          <View>
+            <View style={styles.row}>
+              <Text style={styles.label}>Lista de Citas</Text>
+
+              <Text style={styles.label}> </Text>
+              <TouchableOpacity onPress={() => navegarList('CitasList')}>
                 <Text style={styles.link}>Ver Todos</Text>
               </TouchableOpacity>
             </View>

@@ -2,6 +2,12 @@ import axios from 'axios';
 import { CitaInterface } from "../interfaces/CitaInterface";
 import { DoctoresInterface } from "../interfaces/DoctoresInterface";
 
+import '../../config/firebase';
+
+import { getAuth } from 'firebase/auth';
+
+const auth = getAuth();
+
 const baseUrl = 'http://10.0.2.2:8080/citas';
 
 const getCita = async (id: string) => {
@@ -25,6 +31,26 @@ const newDoctorCita = async (cita: CitaInterface) => {
   }
 }
 
+const getCitasPacientes = async () => {
+  const currentUserEmail: string = auth?.currentUser?.email == null ? '' : auth.currentUser.email
+  const response = await axios.get(baseUrl + '/getByPacienteEmail/' + currentUserEmail);
+  if (response.status === 200) {
+    return response.data.return;
+  } else {
+    throw new Error("Fallo al listar");
+  }
+}
+
+const getCitasDoctores = async () => {
+  const currentUserEmail: string = auth?.currentUser?.email == null ? '' : auth.currentUser.email
+  const response = await axios.get(baseUrl + '/getByDoctorEmail/' + currentUserEmail);
+  if (response.status === 200) {
+    return response.data.return;
+  } else {
+    throw new Error("Fallo al listar");
+  }
+}
+
 const newPacienteCita = async (cita: CitaInterface) => {
   const url = baseUrl + '/newPacienteCita'
   const response = await axios.post(url, cita);
@@ -34,7 +60,6 @@ const newPacienteCita = async (cita: CitaInterface) => {
     throw new Error("Fallo al crear");
   }
 }
-
 
 const updateCita = async (cita: CitaInterface) => {
   const urlPut = baseUrl + '/' + cita.id
@@ -46,5 +71,4 @@ const updateCita = async (cita: CitaInterface) => {
   }
 }
 
-
-export default { newDoctorCita, newPacienteCita, getCita, updateCita }
+export default { newDoctorCita, newPacienteCita, getCitasPacientes, getCitasDoctores, getCita, updateCita }
