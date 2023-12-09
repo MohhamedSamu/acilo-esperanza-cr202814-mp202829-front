@@ -68,16 +68,26 @@ const DoctoresListScreen = (props: any) =>
     });
   }
 
-  const navegarNuevo = (id?: string) =>
+  const navegarNuevo = (item?: DoctoresInterface) =>
   {
     if (userType != 'paciente'){
       Navigation.push(props.componentId, {
         component: {
           name: 'Doctor',
           passProps: {
-            id: id,
+            id: item?.id,
             callBack: callback,
             from: 'list'
+          }
+        }
+      })
+    }else{
+      Navigation.push(props.componentId, {
+        component: {
+          name: 'PacientesAgendarCita',
+          passProps: {
+            doctor: item,
+            id: item?.id
           }
         }
       })
@@ -106,7 +116,7 @@ const DoctoresListScreen = (props: any) =>
           <ScrollView contentContainerStyle={styles.cards}>
             <Block flex space="between">
               {datos && datos.map((card, id) => (
-                <TouchableOpacity onPress={() => navegarNuevo(card.id)} style={styles.cards} key={'touch-' + id}>
+                <TouchableOpacity onPress={() => navegarNuevo(card)} style={styles.cards} key={'touch-' + id}>
                   <Card
                     key={'card-' + id}
                     flex

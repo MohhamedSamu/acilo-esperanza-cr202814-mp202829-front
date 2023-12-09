@@ -9,14 +9,17 @@ const auth = getAuth();
 
 const CardItem = ({ item, index }: any, props: any, screenName: string, callBack: any) =>
 {
-  const navegarSettings = (id?: string) =>
+  const navegarSettings = (item?: any) =>
   {
+    if (screenName == "Cita"){
+      return
+    }
     if (auth.currentUser?.displayName != 'paciente'){
       Navigation.push(props.componentId, {
         component: {
           name: screenName,
           passProps: {
-            id: id,
+            id: item.id,
             callBackItem: callBackItem,
             from: 'item'
           }
@@ -28,9 +31,20 @@ const CardItem = ({ item, index }: any, props: any, screenName: string, callBack
           component: {
             name: screenName,
             passProps: {
-              id: id,
+              id: item.id,
               callBackItem: callBackItem,
               from: 'item'
+            }
+          }
+        })
+      } else {
+        console.log('desde paciente a doctor??');
+        Navigation.push(props.componentId, {
+          component: {
+            name: 'PacientesAgendarCita',
+            passProps: {
+              doctor: item,
+              id: item?.id
             }
           }
         })
@@ -45,14 +59,29 @@ const CardItem = ({ item, index }: any, props: any, screenName: string, callBack
 
   return (
     <View style={styles.container} key={index}>
-      <TouchableOpacity onPress={() => navegarSettings(item.id)}>
-        <Image
-          source={{ uri: item.picture !== '' ? item.picture : 'https://picsum.photos/id/'+ index +'/800' }}
-          style={styles.image}
-        />
-        <Text style={styles.header}>{screenName == "Doctor" ? 'Dr. ' : ''}{item.nombres} {item.apellidos}</Text>
+      <TouchableOpacity onPress={() => navegarSettings(item)}>
+        { screenName == "Cita" ? 
+          <View>
+            <Image
+              source={{ uri: auth.currentUser?.displayName == 'paciente' ? item.doctor.picture : item.paciente.picture }}
+              style={styles.image}
+            />
+            <Text style={styles.header}>
+              {auth.currentUser?.displayName == 'paciente' ? `Cita con Dr. ${item.doctor.nombres}  ${item.doctor.nombres}` : `Cita con ${item.paciente.nombres}  ${item.paciente.nombres}` }
+            </Text>
+            <Text style={styles.body}> {item.estado} </Text>
+          </View>
+        :
+          <View>
+            <Image
+              source={{ uri: item.picture !== '' ? item.picture : 'https://picsum.photos/id/'+ index +'/800' }}
+              style={styles.image}
+            />
+            <Text style={styles.header}>{screenName == "Doctor" ? 'Dr. ' : ''}{item.nombres} {item.apellidos}</Text>
+            <Text style={styles.body}>{screenName == "Paciente" ? (item.capacitado ? 'Capacitado' : 'Requiere atención') : item.titulo}</Text>
+          </View>
+        }
 
-        <Text style={styles.body}>{screenName != "Doctor" ? (item.capacitado ? 'Capacitado' : 'Requiere atención') : item.titulo}</Text>
       </TouchableOpacity>
     </View>
   );

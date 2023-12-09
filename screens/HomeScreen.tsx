@@ -3,9 +3,11 @@ import { Navigation } from "react-native-navigation";
 import { Text } from 'react-native-paper';
 import DoctoresService from "../src/services/DoctoresService";
 import PacientesService from "../src/services/PacientesService";
+import CitasService from "../src/services/CitasService";
 import React, { useState, useEffect } from "react";
 import { DoctoresInterface } from "../src/interfaces/DoctoresInterface";
 import { PacientesInterface } from "../src/interfaces/PacientesInterface";
+import { CitaInterface } from "../src/interfaces/CitaInterface";
 
 import { ActivityIndicator, MD2Colors } from 'react-native-paper';
 
@@ -21,8 +23,10 @@ const HomeScreen = (props: any) =>
 {
   const [datos, setDatos] = useState<DoctoresInterface[]>([]);
   const [datosPaciente, setDatosPaciente] = useState<PacientesInterface[]>([]);
+  const [datosCitas, setDatosCitas] = useState<CitaInterface[]>([]);
   const [loadingData, setLoadingData] = useState(true);
   const [loadingPacientesData, setLoadingPacientesData] = useState(true);
+  const [loadingCitasData, setLoadingCitasData] = useState(true);
 
   const [userType, setUserType] = useState('');
 
@@ -38,8 +42,10 @@ const HomeScreen = (props: any) =>
 
     listarDoctores();
     listarPacientes();
+    listarCitas();
     setLoadingData(true);
     setLoadingPacientesData(true);
+    setLoadingCitasData(true);
   }, []);
 
   const callBackHome = () =>
@@ -72,6 +78,29 @@ const HomeScreen = (props: any) =>
     {
       console.log(error);
     });
+  }
+
+  const listarCitas = () =>
+  {
+    if (userType == 'doctor'){
+      CitasService.getCitasDoctores().then((response: CitaInterface[]) =>
+      {
+        setDatosCitas(response);
+        setLoadingCitasData(false);
+      }).catch(error =>
+      {
+        console.log(error);
+      });
+    }else{
+      CitasService.getCitasPacientes().then((response: CitaInterface[]) =>
+      {
+        setDatosCitas(response);
+        setLoadingCitasData(false);
+      }).catch(error =>
+      {
+        console.log(error);
+      });
+    }
   }
 
   const navegarList = (screen: string) =>
@@ -163,19 +192,76 @@ const HomeScreen = (props: any) =>
         </View>
         : ''}
 
-      {(userType == 'doctor' || userType == 'paciente') ?
+          
+      {(userType == 'paciente') ?
         <View>
           {/* Lista de Citas */}
-          <View>
-            <View style={styles.row}>
-              <Text style={styles.label}>Lista de Citas</Text>
+          {!loadingCitasData ?
+            <View>
+              <View style={styles.row}>
+                <Text style={styles.label}>Lista de Citas</Text>
 
-              <Text style={styles.label}> </Text>
-              <TouchableOpacity>
-                <Text style={styles.link}>Ver Todos</Text>
-              </TouchableOpacity>
+                <Text style={styles.label}> </Text>
+                <TouchableOpacity onPress={() => navegarList('CitasPacientesList')}>
+                  <Text style={styles.link}>Ver Todos</Text>
+                </TouchableOpacity>
+              </View>
+
+              <Carousel
+                  style={{ flex: 1 }}
+                  loop={true}
+                  layout={'default'}
+                  data={datosCitas}
+                  renderItem={(item) => CardItem(item, props, 'Cita', () => { callBackHome() })}
+                  sliderWidth={440}
+                  itemWidth={180}
+                  useScrollView={true}
+                />
+
             </View>
-          </View>
+            :
+            <View>
+              <Text> </Text>
+              <Text> </Text>
+              <ActivityIndicator animating={loadingPacientesData} color={MD2Colors.black} />
+            </View>
+          }
+        </View>
+      : ''}
+
+        {(userType == 'doctor') ?
+        <View>
+          {/* Lista de Citas */}
+          {!loadingCitasData ?
+            <View>
+              <View style={styles.row}>
+                <Text style={styles.label}>Lista de Citas</Text>
+
+                <Text style={styles.label}> </Text>
+                <TouchableOpacity onPress={() => navegarList('CitasList')}>
+                  <Text style={styles.link}>Ver Todos</Text>
+                </TouchableOpacity>
+              </View>
+
+              <Carousel
+                  style={{ flex: 1 }}
+                  loop={true}
+                  layout={'default'}
+                  data={datosCitas}
+                  renderItem={(item) => CardItem(item, props, 'Cita', () => { callBackHome() })}
+                  sliderWidth={440}
+                  itemWidth={180}
+                  useScrollView={true}
+                />
+
+            </View>
+            :
+            <View>
+              <Text> </Text>
+              <Text> </Text>
+              <ActivityIndicator animating={loadingPacientesData} color={MD2Colors.black} />
+            </View>
+          }
         </View>
         : ''}
 

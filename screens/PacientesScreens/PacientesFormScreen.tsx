@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Pressable, ScrollView, TouchableOpacity, Image } from "react-native";
+import { StyleSheet, View, Pressable, ScrollView, TouchableOpacity, Image } from "react-native";
 import React, { useEffect, useState } from "react";
 import Background from "../../src/components/Background";
 import TextInput from "../../src/components/TextInput";
@@ -18,6 +18,12 @@ import { Switch } from 'react-native-paper';
 import { launchImageLibrary } from "react-native-image-picker";
 
 import { ImageLibraryOptions } from "react-native-image-picker/src/types";
+import { getAuth } from "firebase/auth";
+import { Block } from "galio-framework";
+import { Text } from "galio-framework";
+import { materialTheme } from "../../src/core/ThemeM";
+
+const auth = getAuth();
 
 const options: ImageLibraryOptions = {
   mediaType: "photo",
@@ -36,6 +42,7 @@ const PacientesFormScreen = (props: any) =>
   const [capacitado, setCapacitado] = useState(true);
   const [picture, setPicture] = useState({ value: '', error: '' });
   const [password, setPassword] = useState({ value: '', error: '' });
+  const [paciente, setPaciente] = useState<PacientesInterface | null>(null);
 
   const [image, setImage] = useState<string | undefined>('');
 
@@ -47,6 +54,7 @@ const PacientesFormScreen = (props: any) =>
   const [modalType, setModalType] = React.useState('');
 
   const [loadingData, setLoadingData] = useState(true);
+  const [userType, setUserType] = useState('');
 
   const showModal = (type: string, text: string) =>
   {
@@ -63,6 +71,14 @@ const PacientesFormScreen = (props: any) =>
 
   useEffect(() =>
   {
+    if (auth.currentUser?.displayName == undefined)
+    {
+      setUserType('admin')
+    } else
+    {
+      setUserType(auth.currentUser?.displayName)
+    }
+
     if (editarDatos)
     {
       findPaciente(props.id);
@@ -78,6 +94,7 @@ const PacientesFormScreen = (props: any) =>
     PacientesService.getPaciente(id).then((response: PacientesInterface) =>
     {
       console.log(response);
+      setPaciente(response);
       setEmail({ value: response.email, error: '' });
       setNombres({ value: response.nombres, error: '' });
       setApellidos({ value: response.apellidos, error: '' });
@@ -154,6 +171,20 @@ const PacientesFormScreen = (props: any) =>
         //Mostrar modal
         showModal('danger', error.message)
       });
+  }
+
+  const navegarList = () =>
+  {
+    console.log(paciente);
+    Navigation.push(props.componentId, {
+      component: {
+        name: 'DoctoresAgendarCita',
+        passProps: {
+          paciente: paciente,
+          id: paciente?.id
+        }
+      }
+    })
   }
 
   const actualizarPaciente = (paciente: PacientesInterface) =>
@@ -233,6 +264,13 @@ const PacientesFormScreen = (props: any) =>
                   {editarDatos ? 'Editar Paciente' : 'Nuevo Paciente'}
                 </Text>
               </TouchableOpacity>
+
+              <TouchableOpacity onPress={() => navegarList()}>
+                <Block middle style={styles.pro}>
+                  <Text size={14} color="white">Nueva Cita</Text>
+                </Block>
+              </TouchableOpacity>
+
             </View>
 
             <TextInput
@@ -370,6 +408,15 @@ const styles = StyleSheet.create({
     height: 150,
     marginRight: 10,
     marginBottom: 10,
+  },
+  pro: {
+    backgroundColor: materialTheme.COLORS.LABEL,
+    paddingHorizontal: 6,
+    marginRight: 25 / 2,
+    marginLeft: 30 / 2,
+    borderRadius: 4,
+    height: 28,
+    width: 100,
   },
 });
 

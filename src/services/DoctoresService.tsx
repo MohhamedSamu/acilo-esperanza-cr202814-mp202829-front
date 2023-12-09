@@ -16,13 +16,15 @@ const getDoctor = async (id: string) => {
 
 const getDoctorByEmail = async (email: string) => {
   const urlPut = baseUrl + '/getByEmail/' + email
+  console.log(urlPut);
+  const response = await axios.get(urlPut);
+  console.log(response);
+  if (response.status === 200) {
+    return response.data.return[0];
+  } else {
 
-  return await axios.get(urlPut);
-  // if (response.status === 200) {
-  //   return response.data.return[0];
-  // } else {
-  //   throw new Error("Fallo al listar");
-  // }
+    throw new Error("Fallo al listar");
+  }
 }
 
 const getDoctores = async () => {
