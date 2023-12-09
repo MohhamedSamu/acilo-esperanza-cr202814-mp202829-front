@@ -13,7 +13,7 @@ import PacientesListScreen from "./screens/PacientesScreens/PacientesListScreen"
 import PacientesFormScreen from "./screens/PacientesScreens/PacientesFormScreen";
 import CitasPacientesListScreen from "./screens/PacientesScreens/CitasListScreen";
 
-import CitasListScreen from "./screens/CitasListScreen";
+import CitasListScreen from "./screens/DoctoresScreens/CitasListScreen";
 import DoctoresAgendarCitaScreen from "./screens/DoctoresScreens/DoctoresAgendarCitaScreen";
 import PacientesAgendarCitaScreen from "./screens/PacientesScreens/PacientesAgendarCitaScreen";
 

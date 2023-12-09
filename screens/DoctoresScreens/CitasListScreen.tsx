@@ -39,7 +39,7 @@ const CitasListScreen = (props: any) =>
 
   const listarPacientes = () =>
   {
-    CitasService.getCitasPacientes().then((response: CitaInterface[]) =>
+    CitasService.getCitasDoctores().then((response: CitaInterface[]) =>
     {
       setLoadingData(false);
 
@@ -140,10 +140,10 @@ const CitasListScreen = (props: any) =>
                       flex
                       borderless
                       style={styles.card}
-                      title={ 'Cita con doc. ' + card.doctor?.nombres + ' ' + card.doctor?.apellidos}
+                      title={ 'Cita con ' + card.paciente?.nombres + ' ' + card.paciente?.apellidos}
                       caption={card.fecha + ' ' + card.hora}
                       location={card.estado}
-                      avatar={card.doctor?.picture}
+                      avatar={card.paciente?.picture}
                       imageStyle={styles.rounded}
                     />
                   </TouchableOpacity>

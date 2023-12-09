@@ -29,6 +29,16 @@ const getCitasPacientes = async () => {
   }
 }
 
+const getCitasDoctores = async () => {
+  const currentUserEmail: string = auth?.currentUser?.email == null ? '' : auth.currentUser.email
+  const response = await axios.get(baseUrl + '/getByDoctorEmail/' + currentUserEmail);
+  if (response.status === 200) {
+    return response.data.return;
+  } else {
+    throw new Error("Fallo al listar");
+  }
+}
+
 const newPacienteCita = async (cita: CitaInterface) => {
   const url = baseUrl + '/newPacienteCita'
   const response = await axios.post(url, cita);
@@ -39,4 +49,4 @@ const newPacienteCita = async (cita: CitaInterface) => {
   }
 }
 
-export default { newDoctorCita, newPacienteCita }
+export default { newDoctorCita, newPacienteCita, getCitasPacientes, getCitasDoctores }

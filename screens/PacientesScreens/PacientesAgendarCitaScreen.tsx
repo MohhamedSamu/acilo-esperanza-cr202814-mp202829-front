@@ -109,10 +109,11 @@ const PacientesAgendarCitaScreen = (props: any) => {
     }
 
     // @ts-ignore
-    PacientesService.getPacienteByEmail(auth.currentUser?.email).then((response: PacientesInterface) =>
+    PacientesService.getPacienteByEmail(auth.currentUser?.email).then((response: any) =>
     {
+
       const cita: CitaInterface = {
-        paciente: response,
+        paciente: response.data.return[0],
         fecha: fechaCita.value,
         hora: selected,
         doctor: doctor
