@@ -68,11 +68,9 @@ const CitasListScreen = (props: any) =>
   {
     Navigation.push(props.componentId, {
       component: {
-        name: 'Paciente',
+        name: 'DetalleCita',
         passProps: {
           id: id,
-          callBack: callback,
-          from: 'list'
         }
       }
     })
@@ -104,7 +102,7 @@ const CitasListScreen = (props: any) =>
                 checked={selected === 'confirmada'}
                 onPress={() => handleFilter('confirmada')}
               />
-              
+
               <RadioButton
                 label="Pendientes"
                 checked={selected === 'pendiente'}
