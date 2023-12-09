@@ -11,6 +11,9 @@ const CardItem = ({ item, index }: any, props: any, screenName: string, callBack
 {
   const navegarSettings = (item?: any) =>
   {
+    if (screenName == "Cita"){
+      return
+    }
     if (auth.currentUser?.displayName != 'paciente'){
       Navigation.push(props.componentId, {
         component: {
@@ -57,13 +60,28 @@ const CardItem = ({ item, index }: any, props: any, screenName: string, callBack
   return (
     <View style={styles.container} key={index}>
       <TouchableOpacity onPress={() => navegarSettings(item)}>
-        <Image
-          source={{ uri: item.picture !== '' ? item.picture : 'https://picsum.photos/id/'+ index +'/800' }}
-          style={styles.image}
-        />
-        <Text style={styles.header}>{screenName == "Doctor" ? 'Dr. ' : ''}{item.nombres} {item.apellidos}</Text>
+        { screenName == "Cita" ? 
+          <View>
+            <Image
+              source={{ uri: auth.currentUser?.displayName == 'paciente' ? item.doctor.picture : item.paciente.picture }}
+              style={styles.image}
+            />
+            <Text style={styles.header}>
+              {auth.currentUser?.displayName == 'paciente' ? `Cita con Dr. ${item.doctor.nombres}  ${item.doctor.nombres}` : `Cita con ${item.paciente.nombres}  ${item.paciente.nombres}` }
+            </Text>
+            <Text style={styles.body}> {item.estado} </Text>
+          </View>
+        :
+          <View>
+            <Image
+              source={{ uri: item.picture !== '' ? item.picture : 'https://picsum.photos/id/'+ index +'/800' }}
+              style={styles.image}
+            />
+            <Text style={styles.header}>{screenName == "Doctor" ? 'Dr. ' : ''}{item.nombres} {item.apellidos}</Text>
+            <Text style={styles.body}>{screenName == "Paciente" ? (item.capacitado ? 'Capacitado' : 'Requiere atención') : item.titulo}</Text>
+          </View>
+        }
 
-        <Text style={styles.body}>{screenName != "Doctor" ? (item.capacitado ? 'Capacitado' : 'Requiere atención') : item.titulo}</Text>
       </TouchableOpacity>
     </View>
   );
