@@ -6,6 +6,7 @@ Este es un proyecto de control administrativo para el acilo esperanza de Santa A
 - [ Diseño propuesto de la aplicacion (https://github.com/MohhamedSamu/acilo-esperanza-cr202814-mp202829-front/blob/main/dise%C3%B1o_UX_UI_acilo_ezperanza.pdf) ]
 
 - [ Primer video de avance (Fase#2) (https://youtu.be/F29hZXgXtbg) ]
+- [ Segundo video de avance (Fase#3) (https://youtu.be/3ZfYdGqUBwY) ]
 
 ### Programadores
 * Samuel Fernando Calderon Reyes, CR202814
